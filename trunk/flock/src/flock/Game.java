@@ -2,6 +2,7 @@ package flock;
 
 import java.awt.*; // FIXME no *s
 import java.awt.event.*;
+import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -10,14 +11,14 @@ import javax.swing.*;
  * as well as global access points for the configuration of the game and the
  * ImageManager of the game. 
  */
-public class Game extends JPanel implements Runnable
+public class Game extends JFrame implements Runnable
 {
 	/// make Eclipse happy.
 	private static final long serialVersionUID = 5332222116616788458L;
 	
 	/// singleton: the one and only running Game, accessible through instance().
 	static private Game _theGame = null;
-	private JFrame _window = null;
+	private Canvas _canvas = null;
 	private Config _config = null;
 	private ImageManager _imageman = null;
 	private LevelManager _levelman = null;
@@ -30,7 +31,6 @@ public class Game extends JPanel implements Runnable
 	
 	private Game()
 	{
-		setPreferredSize(new Dimension(800,600));
 		_isRunning = false;
 	}
 	
@@ -44,12 +44,26 @@ public class Game extends JPanel implements Runnable
 		_imageman = new ImageManager();
 		_levelman = new LevelManager();
 		
-		if(testing)
+		if(!testing)
 		{
-			_isRunning = false;
-		}
-		else
-		{
+			_canvas = new Canvas();
+			_canvas.setPreferredSize(new Dimension(800,600));
+			add(_canvas);
+			pack();
+			setResizable(false);
+
+			setVisible(true);
+			_canvas.createBufferStrategy(2);
+			
+			// Quit the game if the window is closed.
+			addWindowListener(new WindowAdapter()
+				{
+			    	public void windowClosing(WindowEvent e)
+			    	{
+			    		System.exit(0);
+			    	}
+				});
+			
 			// Main thread updates, animator thread paints;
 			_animator = new Thread(this);
 			_animator.start();
@@ -65,12 +79,6 @@ public class Game extends JPanel implements Runnable
 		_currentLevel = level;
 		_tiles = level.tiles();
 		_entities = level.entities();
-	}
-	
-	/// We store our parent window so that we can update its title.
-	public void setWindow(JFrame window)
-	{
-		_window = window;
 	}
 	
 	/// Entry point into the game. Returns when game is finished.
@@ -96,27 +104,51 @@ public class Game extends JPanel implements Runnable
 			fps.sleep();
 			System.out.println("animatorLoop");
 			
-			Graphics2D g = (Graphics2D) getGraphics();
-			if(g == null)
+			// Code from BufferStrategy docs:
+			BufferStrategy strategy = _canvas.getBufferStrategy();
+			do
 			{
-				System.out.println("Animator thread skipping a beat -- no graphics yet.");
-				continue;
-			}
-			g.clearRect(0, 0, getWidth(), getHeight());
-			for(int r = 0; r < _currentLevel.rows(); r++)
-				for(int c = 0; c < _currentLevel.cols(); c++)
-					_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
-			for(Entity ent: _entities)
-				ent.draw(g);
+				// The following loop ensures that the contents of the drawing buffer
+				// are consistent in case the underlying surface was recreated
+				do
+				{
+					// Get a new graphics context every time through the loop
+					// to make sure the strategy is validated
+					Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+					//Graphics2D g = (Graphics2D) getContentPane().getGraphics();
+					
+					// Render
+					if(g == null)
+					{
+						System.out.println("Animator thread skipping a beat -- no graphics yet.");
+						continue;
+					}
+					g.clearRect(0, 0, getWidth(), getHeight());
+					for(int r = 0; r < _currentLevel.rows(); r++)
+						for(int c = 0; c < _currentLevel.cols(); c++)
+							_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
+					for(Entity ent: _entities)
+						ent.draw(g);
+					
+					// Dispose the graphics
+					g.dispose();
+					
+					// Repeat the rendering if the drawing buffer contents 
+					// were restored
+				} while (strategy.contentsRestored());
 			
-			// TODO: double-buffering like Zapped.
-			
+				// Display the buffer
+				strategy.show();
+				
+				// Repeat the rendering if the drawing buffer was lost
+			} while(strategy.contentsLost());
+
 			titleCounter++;
 			if(titleCounter == config().paintFps())
 			{
 				titleCounter = 0;
 				_actualFps = fps.actualFps();
-				_window.setTitle(windowTitle());
+				setTitle(windowTitle());
 			}	
 		}
 	}
@@ -192,25 +224,6 @@ public class Game extends JPanel implements Runnable
 	/// main app.
 	public static void main(String[] args)
 	{
-		Game game = instance();
-		
-		// A top-level window for our game.
-		JFrame window = new JFrame(game.windowTitle());
-		game.setWindow(window); // To update the title (this sucks).
-		
-		// Quit the game if the window is closed.
-		window.addWindowListener(new WindowAdapter()
-			{
-		    	public void windowClosing(WindowEvent e)
-		    	{
-		    		System.exit(0);
-		    	}
-			});
-
-		window.add(game);
-		window.pack();
-		window.setResizable(false);
-		window.setVisible(true);
-		game.run();
+		instance().run();
 	}
 }
