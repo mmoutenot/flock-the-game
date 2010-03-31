@@ -5,7 +5,7 @@ public class DemoEntity extends Entity
 {
 	public DemoEntity()
 	{
-		super("bogus"); // image not found
+		super("imageNotFound");
 		_rect.x = 100;
 		_rect.y = 100;
 	}

@@ -18,6 +18,7 @@ public class ImageManager
 	ImageManager()
 	{
 		_images = new HashMap<String, BufferedImage>();
+		_images.put("null", null);
 		loadImage("imageNotFound", null);
 	}
 	
