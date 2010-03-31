@@ -75,6 +75,12 @@ abstract public class Entity extends Tile
 	/// updates the Entity. Subclasses should put update logic in doUpdate().
 	public void update()
 	{
+		_velX +=_accelX;
+		_velY +=(-_accelY+gravity);
+		_x = _x+_velX;
+		_y = _y+_velY;
+		_rect.x=(int) _x;
+		_rect.y=(int) _y;
 		doUpdate(elapsedTime());
 		_lastTime = System.currentTimeMillis();
 	}

@@ -19,7 +19,7 @@ public class DemoEntity extends Entity
 	@Override
 	public void doUpdate(long msElapsed)
 	{
-		_rect.x++;
+		//_rect.x++;
 		System.out.println("x " + _rect.x);
 	}
 }
