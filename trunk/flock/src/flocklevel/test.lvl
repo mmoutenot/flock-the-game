@@ -1,0 +1,19 @@
+rows=10
+columns=16
+; comment
+title=This is a test level.
+;
+begin
+################
+#              #
+#              #
+#              #
+; comment
+#              #
+#              #
+################
+#              #
+#              #
+; comment
+################
+end

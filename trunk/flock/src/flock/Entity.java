@@ -1,31 +1,21 @@
 package flock;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 
 /**
- * Stub class for a game entity.
+ * An Entity is a moving object on the screen.
+ * Unlike Tiles, Entities store their position.
  */
-abstract public class Entity
+abstract public class Entity extends Tile
 {
 	protected Rectangle _rect;
-	protected Image _image;
 	private long _lastTime;
 	
-	/// subclasses should call super constructor.
-	public Entity(String imageName)
+	public Entity(String id)
 	{
-		ImageManager mgr = Game.instance().imageManager();
-		Image img = mgr.getImage(imageName);
-		Rectangle rect = new Rectangle(0, 0, img.getWidth(null), img.getHeight(null));
-		init(rect, img);
-	}
-	
-	private void init(Rectangle rect, Image image)
-	{
-		_rect = rect;
-		_image = image;
+		super(id);
+		_rect = new Rectangle(0, 0, _image.getWidth(null), _image.getHeight(null));
 		update();
 	}
 	
@@ -48,12 +38,12 @@ abstract public class Entity
 		_lastTime = System.currentTimeMillis();
 	}
 	
+	/// subclasses must override / define.
+	abstract public void doUpdate(long msElapsed);
+	
 	/// override if you want to do something other than draw an image.
 	public void draw(Graphics2D g)
 	{
 		g.drawImage(_image, _rect.x, _rect.y, null);
 	}
-	
-	/// subclasses must override / define.
-	abstract public void doUpdate(long msElapsed);
 }

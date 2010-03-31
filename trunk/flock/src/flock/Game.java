@@ -19,10 +19,13 @@ public class Game extends JPanel implements Runnable
 	static private Game _theGame = null;
 	private JFrame _window = null;
 	private Config _config = null;
-	private ImageManager _imager = null;
+	private ImageManager _imageman = null;
+	private LevelManager _levelman = null;
 	private boolean _isRunning = false;
 	private Thread _animator;
-	private double _actualFps; 
+	private double _actualFps;
+	private Level _currentLevel;
+	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	
 	private Game()
@@ -38,7 +41,8 @@ public class Game extends JPanel implements Runnable
 	private void init()
 	{
 		_config = new Config();
-		_imager = new ImageManager();
+		_imageman = new ImageManager();
+		_levelman = new LevelManager();
 		
 		// Main thread updates, animator thread paints;
 		_animator = new Thread(this);
@@ -47,8 +51,15 @@ public class Game extends JPanel implements Runnable
 		_entities = new ArrayList<Entity>();
 		_isRunning = true;
 		
-		// Just testing...
-		_entities.add(new DemoEntity());
+		_config.loadLevels();
+		loadLevel(_levelman.defaultLevel());
+	}
+	
+	private void loadLevel(Level level)
+	{
+		_currentLevel = level;
+		_tiles = level.tiles();
+		_entities = level.entities();
 	}
 	
 	/// We store our parent window so that we can update its title.
@@ -87,10 +98,11 @@ public class Game extends JPanel implements Runnable
 				continue;
 			}
 			g.clearRect(0, 0, getWidth(), getHeight());
+			for(int r = 0; r < _currentLevel.rows(); r++)
+				for(int c = 0; c < _currentLevel.cols(); c++)
+					_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
 			for(Entity ent: _entities)
-			{
 				ent.draw(g);
-			}
 			
 			// TODO: double-buffering like Zapped.
 			
@@ -146,7 +158,13 @@ public class Game extends JPanel implements Runnable
 	/// Returns the unique ImageManager of this game.
 	public ImageManager imageManager()
 	{
-		return _imager;
+		return _imageman;
+	}
+	
+	/// Returns the unique LevelManager of this game.
+	public LevelManager levelManager()
+	{
+		return _levelman;
 	}
 	
 	/// main app.
