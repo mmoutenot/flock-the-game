@@ -11,12 +11,30 @@ abstract public class Entity extends Tile
 {
 	protected Rectangle _rect;
 	private long _lastTime;
+	/*
+	 * the following variables are physics and position related
+	 */
+	protected double _x;
+	protected double _y;
+	protected double _velX;
+	protected double _velY;
+	protected double _accelX;
+	protected double _accelY;
+	public double gravity = .1;
+	
 	
 	public Entity(String id)
 	{
 		super(id);
 		_rect = new Rectangle(0, 0, _image.getWidth(null), _image.getHeight(null));
 		update();
+		//physics-related variables
+		_x=100;
+		_y=100;
+		_accelX = 0.001;
+		_accelY = 0;
+		_velX = 0;
+		_velY = -5;
 	}
 	
 	/**
@@ -68,5 +86,38 @@ abstract public class Entity extends Tile
 	public void draw(Graphics2D g)
 	{
 		g.drawImage(_image, _rect.x, _rect.y, null);
+	}
+	/*
+	 * physics and position related functions
+	 */
+	///this function zeroes out acceleration in a given dimension. axis = 1 for x axis, 2 for y axis, or 0 for both
+	public void stopMovement(int axis)
+	{
+		if(axis==0)
+		{
+			_accelX=0;
+			_accelY=0;
+			_velX=0;
+			_velY=0;
+		}
+		if(axis==1)
+		{
+			_accelX=0;
+			_velX=0;
+		}
+		if(axis==2)
+		{
+			_accelY=0;
+			_velY=0;
+		}
+	}
+	
+	public void changeAccelX(double newAccelX)
+	{
+		_accelX = newAccelX;
+	}
+	public void changeAccelY(double newAccelY)
+	{
+		_accelY = newAccelY;
 	}
 }
