@@ -55,9 +55,9 @@ public class Config
 		
 		try
 		{
-			LevelTest lTest = new LevelTest();
-			mgr.addLevel(lTest);
-			mgr.setDefaultLevel(lTest);
+			LevelDemo lDemo = new LevelDemo();
+			mgr.addLevel(lDemo);
+			mgr.setDefaultLevel(lDemo);
 		}
 		catch (Exception e)
 		{

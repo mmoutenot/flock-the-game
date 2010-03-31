@@ -19,10 +19,33 @@ abstract public class Entity extends Tile
 		update();
 	}
 	
+	/**
+	 * Required for deep-copying in Level.
+	 * Not sure if there is a better way to do this.
+	 * All subclasses must override this.
+	 */
+	@Override
+	public Object clone()
+	{
+		Entity copy = (Entity) super.clone();
+		copy._rect = (Rectangle) _rect.clone();
+		return copy;
+	}
+	
 	/// @return rectangle occupied by this Entity on screen.
 	public Rectangle rect()
 	{
 		return _rect;
+	}
+	
+	public void setX(int x)
+	{
+		_rect.x = x;
+	}
+	
+	public void setY(int y)
+	{
+		_rect.y = y;
 	}
 	
 	/// since _lastTime;
