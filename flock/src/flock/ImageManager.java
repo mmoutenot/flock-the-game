@@ -1,7 +1,6 @@
 package flock;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -19,35 +18,35 @@ public class ImageManager
 	ImageManager()
 	{
 		_images = new HashMap<String, BufferedImage>();
-		loadImage("imageNotFound.png", null);
+		loadImage("imageNotFound", null);
 	}
 	
 	/// loads an image from the Game class resource.
-	private void loadImage(String name, BufferedImage fallback)
+	private void loadImage(String id, BufferedImage fallback)
 	{
 		BufferedImage img;
 		try
 		{
-			System.out.println("img name " + name);
-			URL url = Game.instance().getClass().getClassLoader().getResource("flockimg/" + name);
+			System.out.println("img name " + id);
+			URL url = Game.instance().getClass().getClassLoader().getResource("flockimg/" + id + ".png");
 			// TODO document "flockimg/" and figure out where best to put images.
 			System.out.println("URL = " + url);
 			img = ImageIO.read(url);
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			System.err.println("Image loading error: " + name);
+			System.err.println("Image loading error: " + id);
 			e.printStackTrace();
 			img = fallback;
 		}
-		_images.put(name, img);
+		_images.put(id, img);
 	}
 	
 	/// returns an image (loads it if not loaded yet).
-	public BufferedImage getImage(String name)
+	public BufferedImage getImage(String id)
 	{
-		if(!_images.containsKey(name))
-			loadImage(name, _images.get("imageNotFound.png"));
-		return _images.get(name);
+		if(!_images.containsKey(id))
+			loadImage(id, _images.get("imageNotFound"));
+		return _images.get(id);
 	}
 }

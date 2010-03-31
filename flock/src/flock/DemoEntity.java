@@ -6,7 +6,7 @@ public class DemoEntity extends Entity
 
 	public DemoEntity()
 	{
-		super("imageNotFound.png");
+		super("bogus"); // image not found
 		_rect.x = 100;
 		_rect.y = 100;
 	}
