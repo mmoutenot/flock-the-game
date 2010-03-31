@@ -1,8 +1,8 @@
 package flock;
 
-public class LevelTest extends Level
+public class LevelDemo extends Level
 {
-	public LevelTest() throws Exception
+	public LevelDemo() throws Exception
 	{
 		super("test");
 		_entities.add(new DemoEntity());

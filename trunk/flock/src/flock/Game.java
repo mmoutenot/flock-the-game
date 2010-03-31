@@ -38,21 +38,26 @@ public class Game extends JPanel implements Runnable
 	 *  "Second" constructor, to avoid infinite recursion when one of our
 	 *  children calls Game.instance();
 	 */
-	private void init()
+	private void init(boolean testing)
 	{
 		_config = new Config();
 		_imageman = new ImageManager();
 		_levelman = new LevelManager();
 		
-		// Main thread updates, animator thread paints;
-		_animator = new Thread(this);
-		_animator.start();
-		
-		_entities = new ArrayList<Entity>();
-		_isRunning = true;
-		
-		_config.loadLevels();
-		loadLevel(_levelman.defaultLevel());
+		if(testing)
+		{
+			_isRunning = false;
+		}
+		else
+		{
+			// Main thread updates, animator thread paints;
+			_animator = new Thread(this);
+			_animator.start();
+			
+			_config.loadLevels();
+			_isRunning = true;
+			loadLevel(_levelman.defaultLevel());
+		}
 	}
 	
 	private void loadLevel(Level level)
@@ -144,8 +149,25 @@ public class Game extends JPanel implements Runnable
 		if(_theGame == null)
 		{
 			_theGame = new Game();
-			_theGame.init();
+			_theGame.init(false);
 		}
+		return _theGame;
+	}
+	
+	/**
+	 * Creates a "test" instance of the game -- i.e. one that doesn't
+	 * actually load the levels and start running. Useful for testing.
+	 * Must be called before a "real" instance of the game is created.
+	 */
+	public static Game testInstance()
+	{
+		if(_theGame != null)
+		{
+			System.err.println("Game instance already created when testInstance() was called...");
+			System.exit(255);
+		}
+		_theGame = new Game();
+		_theGame.init(true);
 		return _theGame;
 	}
 	

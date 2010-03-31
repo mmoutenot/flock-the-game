@@ -52,14 +52,20 @@ public class Level
 	/// returns a copy of the tile array
 	public Tile[][] tiles()
 	{
-		return _tiles.clone();
+		Tile copy[][] = new Tile[_rows][_cols];
+		for(int r = 0; r < _rows; r++)
+			for(int c = 0; c < _cols; c++)
+				copy[r][c] = (Tile) _tiles[r][c].clone();
+		return copy;
 	}
 	
 	/// returns a copy of the initial entities array
-	@SuppressWarnings("unchecked")
 	public ArrayList<Entity> entities()
 	{
-		return (ArrayList<Entity>) _entities.clone();
+		ArrayList<Entity> copy = new ArrayList<Entity>();
+		for(Entity ent: _entities)
+			copy.add((Entity) ent.clone());
+		return copy;
 	}
 	
 	/// Reads the tile info from disk.

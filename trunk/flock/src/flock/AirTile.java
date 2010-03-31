@@ -12,6 +12,12 @@ public class AirTile extends Tile
 	}
 	
 	@Override
+	public Object clone()
+	{
+		return super.clone();
+	}
+	
+	@Override
 	public void draw(Graphics2D g, int x, int y)
 	{
 	}
