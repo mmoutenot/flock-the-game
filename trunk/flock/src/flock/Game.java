@@ -1,15 +1,19 @@
 package flock;
 
-import java.awt.*; // FIXME no *s
-import java.awt.event.*;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JFrame;
 
 /**
  * Main game class. Contains the game and drawing loops (two separate threads),
  * as well as global access points for the configuration of the game and the
- * ImageManager of the game. 
+ * ImageManager of the game.
  */
 public class Game extends JFrame implements Runnable
 {
@@ -37,7 +41,6 @@ public class Game extends JFrame implements Runnable
 		{
 			if(_stopScheduled && System.currentTimeMillis() - _stopTime >= STOP_DELAY)
 			{
-				System.out.println("delayed stop");
 				_player.setVelX(0);
 				_stopScheduled = false;
 			}
@@ -46,8 +49,6 @@ public class Game extends JFrame implements Runnable
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-			//System.out.println("keyPressed " + e.getKeyCode());
-			//System.out.println("player vel " + _player._velX + " x " + _player._velY);
 			startMovePlayer(getKey(e));
 			// NOTE: eventually we'll want to handle the pause menu here as well,
 			// depending on whether the game is paused.
@@ -303,7 +304,8 @@ public class Game extends JFrame implements Runnable
 	/// Returns an appropriate title for the game window.
 	public String windowTitle()
 	{
-		return "Flock! (" + _actualFps + " FPS)"; // FIXME round
+		final int fps = (int)(_actualFps * 100);
+		return "Flock! (" + fps / 100.0 + " FPS)";
 	}
 	
 	/// Returns the one and only instance of the running game.
