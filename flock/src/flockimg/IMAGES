@@ -1,1 +1,5 @@
-imageNotFound.png: /home/kde-devel/kde/share/icons/oxygen/64x64/status/dialog-error.png (KDE Oxygen, TODO license)
+The following images were taken from the KDE Oxygen icon theme.
+TODO license.
+
+imageNotFound.png: /usr/share/icons/oxygen/64x64/status/dialog-error.png
+wrench.png: /usr/share/icons/oxygen/64x64/actions/configure.png
