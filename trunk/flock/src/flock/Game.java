@@ -13,6 +13,111 @@ import javax.swing.*;
  */
 public class Game extends JFrame implements Runnable
 {
+	/**
+	 * Handles all key presses.
+	 * Implemented as an inner class of Game since it alters its data structures
+	 * directly.
+	 * 
+	 * Uses some hacks to get around stupid key repeats...
+	 */
+	private class KeyManager extends FlockKeyListener
+	{
+		/**
+		 * Milliseconds to delay stopping after we get a keyReleased.
+		 * This is necessary because key autorepeat sends repeated
+		 * keyPressed and keyReleased events, and we don't want to
+		 * stop the character in the middle of motion.
+		 */
+		final long STOP_DELAY = 10;
+		private boolean _stopScheduled = false;
+		private long _stopTime = 0;
+		
+		/// Call this from the game loop.
+		public void update()
+		{
+			if(_stopScheduled && System.currentTimeMillis() - _stopTime >= STOP_DELAY)
+			{
+				System.out.println("delayed stop");
+				_player.setVelX(0);
+				_stopScheduled = false;
+			}
+		}
+				
+		@Override
+		public void keyPressed(KeyEvent e)
+		{
+			//System.out.println("keyPressed " + e.getKeyCode());
+			//System.out.println("player vel " + _player._velX + " x " + _player._velY);
+			startMovePlayer(getKey(e));
+			// NOTE: eventually we'll want to handle the pause menu here as well,
+			// depending on whether the game is paused.
+		}
+		
+		@Override
+		public void keyReleased(KeyEvent e)
+		{
+			stopMovePlayer(getKey(e));
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e)
+		{
+		}
+		
+		private void startMovePlayer(Key key)
+		{
+			if(_player == null)
+			{
+				System.err.println("No player in KeyManager.startMovePlayer()");
+				return;
+			}
+			
+			switch(key)
+			{
+			case Left:
+				_player.setVelX(-config().defaultPlayerMotionSpeed());
+				_stopScheduled = false;
+				break;
+			case Right:
+				_player.setVelX(config().defaultPlayerMotionSpeed());
+				_stopScheduled = false;
+				break;
+			case Jump:
+				// FIXME jumping should be possible only when we're on top of solid ground.
+				_player.setVelY(-config().defaultPlayerJumpSpeed());
+				break;
+			case TimeFreeze:
+				_timeFreeze = !_timeFreeze;
+				break;
+			case PickUpItem:
+				// TODO
+			case UseItem:
+				// TODO
+			}
+		}
+		
+		private void stopMovePlayer(Key key)
+		{
+			if(_player == null)
+			{
+				System.err.println("No player in KeyManager.stopMovePlayer()");
+				return;
+			}
+			
+			switch(key)
+			{
+			case Left:
+			case Right:
+//				System.out.println("stopped motion");
+				_stopScheduled = true;
+				_stopTime = System.currentTimeMillis();
+				break;
+			}
+		}
+		
+		
+	}
+	
 	/// make Eclipse happy.
 	private static final long serialVersionUID = 5332222116616788458L;
 	
@@ -22,6 +127,7 @@ public class Game extends JFrame implements Runnable
 	private Config _config = null;
 	private ImageManager _imageman = null;
 	private LevelManager _levelman = null;
+	private KeyManager _keyman = null;
 	private boolean _isRunning = false;
 	private Thread _animator;
 	private double _actualFps;
@@ -29,6 +135,7 @@ public class Game extends JFrame implements Runnable
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private PlayerEntity _player;
+	private boolean _timeFreeze;
 	
 	private Game()
 	{
@@ -80,7 +187,23 @@ public class Game extends JFrame implements Runnable
 		_currentLevel = level;
 		_tiles = level.tiles();
 		_entities = level.entities();
-		_player = level.player();
+		_timeFreeze = true;
+		
+		// Find the player:
+		_player = null;
+		for(Entity ent: _entities)
+		{
+			if(ent instanceof PlayerEntity)
+			{
+				_player = (PlayerEntity)ent;
+				break;
+			}
+		}
+		if(_player == null)
+		{
+			System.err.println("Level " + level.id() + " has no player!");
+			System.exit(1);
+		}
 	}
 	
 	/// Entry point into the game. Returns when game is finished.
@@ -158,6 +281,10 @@ public class Game extends JFrame implements Runnable
 	/// Main loop for the game/logic thread.
 	public void gameLoop()
 	{
+		_keyman = new KeyManager();
+		addKeyListener(_keyman);
+		requestFocus(); // grab the keyboard
+		
 		FPSManager fps = new FPSManager(config().updateFps());
 		while(_isRunning)
 		{
@@ -168,6 +295,8 @@ public class Game extends JFrame implements Runnable
 				ent.update();
 				// TODO figure out what to do about collisions...
 			}
+			
+			_keyman.update();
 		}
 	}
 	
