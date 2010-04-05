@@ -11,8 +11,11 @@ abstract public class Entity extends Tile
 {
 	protected Rectangle _rect;
 	private long _lastTime;
+	
 	/*
-	 * the following variables are physics and position related
+	 * The following variables are physics and position related.
+	 * Note about directions: X=0,Y=0 is the top-left corner. Positive directions
+	 * are to the right and downwards, respectively.
 	 */
 	protected double _x;
 	protected double _y;
@@ -20,21 +23,15 @@ abstract public class Entity extends Tile
 	protected double _velY;
 	protected double _accelX;
 	protected double _accelY;
-	public double gravity = .1;
-	
 	
 	public Entity(String id)
 	{
 		super(id);
 		_rect = new Rectangle(0, 0, _image.getWidth(null), _image.getHeight(null));
+		_x = _y = 0;
+		_velX = _velY = 0;
+		_accelX = _accelY = 0;
 		update();
-		//physics-related variables
-		_x=100;
-		_y=100;
-		_accelX = 0.001;
-		_accelY = 0;
-		_velX = 0;
-		_velY = -5;
 	}
 	
 	/**
@@ -56,14 +53,40 @@ abstract public class Entity extends Tile
 		return _rect;
 	}
 	
-	public void setX(int x)
+	public void setX(double x)
 	{
-		_rect.x = x;
+		_x = x;
+		update();
 	}
 	
-	public void setY(int y)
+	public void setY(double y)
 	{
-		_rect.y = y;
+		_y = y;
+		update();
+	}
+	
+	public void setVelX(double vel)
+	{
+		_velX = vel;
+		update();
+	}
+	
+	public void setVelY(double vel)
+	{
+		_velY = vel;
+		update();
+	}
+	
+	public void setAccelX(double newAccelX)
+	{
+		_accelX = newAccelX;
+		update();
+	}
+	
+	public void setAccelY(double newAccelY)
+	{
+		_accelY = newAccelY;
+		update();
 	}
 	
 	/// since _lastTime;
@@ -72,16 +95,23 @@ abstract public class Entity extends Tile
 		return System.currentTimeMillis() - _lastTime;
 	}
 	
-	/// updates the Entity. Subclasses should put update logic in doUpdate().
+	/**
+	 * Updates the Entity's position and velocity.
+	 * Subclasses should put update logic in doUpdate().
+	 */
 	public void update()
 	{
-		_velX +=_accelX;
-		_velY +=(-_accelY+gravity);
-		_x = _x+_velX;
-		_y = _y+_velY;
+		final long ms = elapsedTime();
+		final double sec = ms / 1000.0;
+		
+		_velX += _accelX * sec;
+		_velY += _accelY * sec;
+		_x += _velX * sec;
+		_y += _velY * sec;
 		_rect.x=(int) _x;
 		_rect.y=(int) _y;
-		doUpdate(elapsedTime());
+		
+		doUpdate(ms);
 		_lastTime = System.currentTimeMillis();
 	}
 	
@@ -93,10 +123,8 @@ abstract public class Entity extends Tile
 	{
 		g.drawImage(_image, _rect.x, _rect.y, null);
 	}
-	/*
-	 * physics and position related functions
-	 */
-	///this function zeroes out acceleration in a given dimension. axis = 1 for x axis, 2 for y axis, or 0 for both
+	
+	/// zeroes out acceleration in a given dimension. axis = 1 for x axis, 2 for y axis, or 0 for both
 	public void stopMovement(int axis)
 	{
 		if(axis==0)
@@ -116,14 +144,5 @@ abstract public class Entity extends Tile
 			_accelY=0;
 			_velY=0;
 		}
-	}
-	
-	public void changeAccelX(double newAccelX)
-	{
-		_accelX = newAccelX;
-	}
-	public void changeAccelY(double newAccelY)
-	{
-		_accelY = newAccelY;
 	}
 }
