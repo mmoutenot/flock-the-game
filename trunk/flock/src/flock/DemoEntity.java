@@ -1,6 +1,6 @@
 package flock;
 
-/// a demo entity displaying an image and moving to the right.
+/// a demo entity displaying an image and some free fall.
 public class DemoEntity extends Entity
 {
 	public DemoEntity()

@@ -7,7 +7,7 @@ public class AirTile extends Tile
 	public AirTile()
 	{
 		super("null"); // no image
-		_accel = Game.instance().config().defaultAcceleration();
+		_gravity = Game.instance().config().defaultGravity();
 		_solid = false;
 	}
 	

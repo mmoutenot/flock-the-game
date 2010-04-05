@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Level
+abstract public class Level
 {
 	private String _id;
 	private String _nextId;
@@ -66,6 +66,20 @@ public class Level
 		for(Entity ent: _entities)
 			copy.add((Entity) ent.clone());
 		return copy;
+	}
+	
+	/**
+	 * Returns a copy of the PlayerEntity of this level.
+	 * entities() must contain a single PlayerEntity.
+	 */
+	public PlayerEntity player()
+	{
+		for(Entity ent: _entities)
+		{
+			if(ent instanceof PlayerEntity)
+				return (PlayerEntity)ent;
+		}
+		return null;
 	}
 	
 	/// Reads the tile info from disk.

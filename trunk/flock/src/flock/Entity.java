@@ -27,8 +27,21 @@ abstract public class Entity extends Tile
 	public Entity(String id)
 	{
 		super(id);
-		_rect = new Rectangle(0, 0, _image.getWidth(null), _image.getHeight(null));
-		_x = _y = 0;
+		init(0, 0);
+	}
+	
+	public Entity(String id, double x, double y)
+	{
+		super(id);
+		init(x, y);
+	}
+	
+	/// "real" constructor (to avoid duplication)
+	private void init(double x, double y)
+	{
+		_rect = new Rectangle((int)x, (int)y, _image.getWidth(null), _image.getHeight(null));
+		_x = x;
+		_y = y;
 		_velX = _velY = 0;
 		_accelX = _accelY = 0;
 		update();

@@ -10,7 +10,7 @@ public class Tile implements Cloneable
 {
 	private String _id;
 	protected Image _image;
-	protected double _accel;
+	protected double _gravity;
 	protected boolean _solid;
 	
 	public Tile()
@@ -29,7 +29,7 @@ public class Tile implements Cloneable
 		_id = id;
 		ImageManager mgr = Game.instance().imageManager();
 		_image = mgr.getImage(id);
-		_accel = 0;
+		_gravity = 0;
 		_solid = true;
 	}
 	
@@ -57,15 +57,15 @@ public class Tile implements Cloneable
 		return _id;
 	}
 	
-	public double acceleration()
+	public double gravity()
 	{
-		return _accel;
+		return _gravity;
 	}
 	
 	/// Mostly for testing...
-	public void setAcceleration(double accel)
+	public void setGravity(double gravity)
 	{
-		_accel = accel;
+		_gravity = gravity;
 	}
 	
 	public boolean isSolid()

@@ -22,9 +22,9 @@ public class LevelTest
 			// Check that deep copy works like we want it to.
 			{
 				Tile[][] tiles = test.tiles();
-				tiles[0][0].setAcceleration(tiles[0][0].acceleration() + 2);
+				tiles[0][0].setGravity(tiles[0][0].gravity() + 2);
 				Tile[][] copy = test.tiles();
-				if(tiles[0][0].acceleration() == copy[0][0].acceleration()) // change was propagated	
+				if(tiles[0][0].gravity() == copy[0][0].gravity()) // change was propagated	
 				{
 					System.err.println("Deep-copy for tiles FAILED.");
 					System.exit(1);
