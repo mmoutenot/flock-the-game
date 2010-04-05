@@ -91,9 +91,15 @@ public class Game extends JFrame implements Runnable
 				setTimeFreeze(!_timeFreeze);
 				break;
 			case PickUpItem:
-				// TODO
+				ToolEntity pick = findNearestTool();
+				if(pick == null) // too far; drop current item
+					_player.dropTool();
+				else
+					_player.pickTool(pick);
+				break;
 			case UseItem:
-				// TODO
+				_player.useTool();
+				break;
 			}
 		}
 		
@@ -135,6 +141,7 @@ public class Game extends JFrame implements Runnable
 	private Level _currentLevel;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
+	private ArrayList<ToolEntity> _toolEntities;
 	private PlayerEntity _player;
 	private boolean _timeFreeze;
 	
@@ -190,21 +197,46 @@ public class Game extends JFrame implements Runnable
 		_entities = level.entities();
 		setTimeFreeze(true);
 		
-		// Find the player:
+		// Find the player and all ToolEntities.
 		_player = null;
+		_toolEntities = new ArrayList<ToolEntity>();
 		for(Entity ent: _entities)
 		{
 			if(ent instanceof PlayerEntity)
-			{
 				_player = (PlayerEntity)ent;
-				break;
-			}
+			else if(ent instanceof ToolEntity)
+				_toolEntities.add((ToolEntity)ent);
 		}
 		if(_player == null)
 		{
 			System.err.println("Level " + level.id() + " has no player!");
 			System.exit(1);
 		}
+	}
+	
+	private ToolEntity findNearestTool()
+	{
+		double min = Double.POSITIVE_INFINITY;
+		ToolEntity pick = null;
+		
+		for(ToolEntity ent: _toolEntities)
+		{
+			if(ent == _player.tool())
+				continue;
+			final double dist = _player.distance(ent);
+			System.out.println("Considering " + ent + " at dist " + dist);
+			if(dist < min)
+			{
+				min = dist;
+				pick = ent;
+			}
+		}
+		
+		System.out.println("Nearest entity " + pick + " at dist " + min);
+		if(min < _config.defaultPickToolDistance())
+			return pick;
+		else
+			return null;
 	}
 	
 	/// Entry point into the game. Returns when game is finished.

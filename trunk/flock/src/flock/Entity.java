@@ -2,6 +2,7 @@ package flock;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 
 /**
  * An Entity is a moving object on the screen.
@@ -116,6 +117,17 @@ abstract public class Entity extends Tile
 		return System.currentTimeMillis() - _lastTime;
 	}
 	
+	public Point2D.Double center()
+	{
+		return new Point2D.Double(_x + _rect.width, _y + _rect.height);
+	}
+	
+	/// Distance from my center to other Entity's center.
+	public double distance(Entity other)
+	{
+		return center().distance(other.center());
+	}
+	
 	/**
 	 * Updates the Entity's position and velocity.
 	 * Subclasses should put update logic in doUpdate().
@@ -125,14 +137,14 @@ abstract public class Entity extends Tile
 		final long ms = elapsedTime();
 		final double sec = ms / 1000.0;
 		
+		_rect.x = (int)_x;
+		_rect.y = (int)_y;
 		if(!_frozen)
 		{
 			_velX += _accelX * sec;
 			_velY += _accelY * sec;
 			_x += _velX * sec;
 			_y += _velY * sec;
-			_rect.x = (int)_x;
-			_rect.y = (int)_y;
 		}
 		
 		doUpdate(ms);

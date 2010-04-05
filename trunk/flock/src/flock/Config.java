@@ -19,6 +19,7 @@ public class Config
 	private double _defaultLemmingVelocity;
 	private double _defaultPlayerMotionSpeed;
 	private double _defaultPlayerJumpSpeed;
+	private double _defaultPickToolDistance;
 	
 	public Config()
 	{
@@ -30,6 +31,7 @@ public class Config
 		_defaultLemmingVelocity = 100;
 		_defaultPlayerMotionSpeed = 200;
 		_defaultPlayerJumpSpeed = 100;
+		_defaultPickToolDistance = 50;
 	}
 	
 	public int paintFps()
@@ -70,6 +72,11 @@ public class Config
 	public double defaultPlayerJumpSpeed()
 	{
 		return _defaultPlayerJumpSpeed;
+	}
+	
+	public double defaultPickToolDistance()
+	{
+		return _defaultPickToolDistance;
 	}
 	
 	/// defines which levels are in the game.
