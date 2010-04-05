@@ -13,7 +13,8 @@ public class Config
 	private int _updateFps;
 	private int _tileWidth;
 	private int _tileHeight;
-	private double _defaultAccel;
+	private double _defaultGravity;
+	private double _defaultLemmingVelocity;
 	
 	public Config()
 	{
@@ -21,7 +22,8 @@ public class Config
 		_updateFps = 60;
 		_tileWidth = 30;
 		_tileHeight = 30;
-		_defaultAccel = 9.81;
+		_defaultGravity = 10 * 9.81; // note: pixels/s^2 not m/s^2
+		_defaultLemmingVelocity = 100;
 	}
 	
 	public int paintFps()
@@ -44,9 +46,14 @@ public class Config
 		return _tileWidth;
 	}
 	
-	public double defaultAcceleration()
+	public double defaultGravity()
 	{
-		return _defaultAccel;
+		return _defaultGravity;
+	}
+	
+	public double defaultLemmingVelocity()
+	{
+		return _defaultLemmingVelocity;
 	}
 	
 	public void loadLevels()

@@ -28,6 +28,7 @@ public class Game extends JFrame implements Runnable
 	private Level _currentLevel;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
+	private PlayerEntity _player;
 	
 	private Game()
 	{
@@ -79,6 +80,7 @@ public class Game extends JFrame implements Runnable
 		_currentLevel = level;
 		_tiles = level.tiles();
 		_entities = level.entities();
+		_player = level.player();
 	}
 	
 	/// Entry point into the game. Returns when game is finished.
