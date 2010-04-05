@@ -26,6 +26,5 @@ public class PlayerEntity extends Entity
 		{
 			_accelY = Game.instance().config().defaultGravity();
 		}
-		System.out.println(_velX);
 	}
 }
