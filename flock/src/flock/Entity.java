@@ -23,6 +23,7 @@ abstract public class Entity extends Tile
 	protected double _velY;
 	protected double _accelX;
 	protected double _accelY;
+	protected boolean _frozen;
 	
 	public Entity(String id)
 	{
@@ -44,6 +45,7 @@ abstract public class Entity extends Tile
 		_y = y;
 		_velX = _velY = 0;
 		_accelX = _accelY = 0;
+		_frozen = false;
 		update();
 	}
 	
@@ -102,6 +104,12 @@ abstract public class Entity extends Tile
 		update();
 	}
 	
+	public void setFrozen(boolean frozen)
+	{
+		_frozen = frozen;
+		update();
+	}
+	
 	/// since _lastTime;
 	public long elapsedTime()
 	{
@@ -117,12 +125,15 @@ abstract public class Entity extends Tile
 		final long ms = elapsedTime();
 		final double sec = ms / 1000.0;
 		
-		_velX += _accelX * sec;
-		_velY += _accelY * sec;
-		_x += _velX * sec;
-		_y += _velY * sec;
-		_rect.x = (int)_x;
-		_rect.y = (int)_y;
+		if(!_frozen)
+		{
+			_velX += _accelX * sec;
+			_velY += _accelY * sec;
+			_x += _velX * sec;
+			_y += _velY * sec;
+			_rect.x = (int)_x;
+			_rect.y = (int)_y;
+		}
 		
 		doUpdate(ms);
 		_lastTime = System.currentTimeMillis();
