@@ -102,7 +102,7 @@ public class Game extends JFrame implements Runnable
 		while(true) // draw even if not _isRunning
 		{
 			fps.sleep();
-			System.out.println("animatorLoop");
+			//System.out.println("animatorLoop");
 			
 			// Code from BufferStrategy docs:
 			BufferStrategy strategy = _canvas.getBufferStrategy();
@@ -160,7 +160,7 @@ public class Game extends JFrame implements Runnable
 		while(_isRunning)
 		{
 			fps.sleep();
-			System.out.println("gameLoop");
+			//System.out.println("gameLoop");
 			for(Entity ent: _entities)
 			{
 				ent.update();
