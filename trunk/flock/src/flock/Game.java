@@ -88,7 +88,7 @@ public class Game extends JFrame implements Runnable
 				_player.setVelY(-config().defaultPlayerJumpSpeed());
 				break;
 			case TimeFreeze:
-				_timeFreeze = !_timeFreeze;
+				setTimeFreeze(!_timeFreeze);
 				break;
 			case PickUpItem:
 				// TODO
@@ -188,7 +188,7 @@ public class Game extends JFrame implements Runnable
 		_currentLevel = level;
 		_tiles = level.tiles();
 		_entities = level.entities();
-		_timeFreeze = true;
+		setTimeFreeze(true);
 		
 		// Find the player:
 		_player = null;
@@ -352,6 +352,16 @@ public class Game extends JFrame implements Runnable
 	public LevelManager levelManager()
 	{
 		return _levelman;
+	}
+	
+	public void setTimeFreeze(boolean freeze)
+	{
+		_timeFreeze = freeze;
+		for(Entity ent : _entities)
+		{
+			if(!(ent instanceof PlayerEntity))
+				ent.setFrozen(freeze);
+		}
 	}
 	
 	/// main app.
