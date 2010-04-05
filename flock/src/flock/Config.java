@@ -1,5 +1,7 @@
 package flock;
 
+import java.awt.event.KeyEvent;
+
 /**
  * Holds all configuration data for the game.
  * The only instance is created in Game.
@@ -15,6 +17,8 @@ public class Config
 	private int _tileHeight;
 	private double _defaultGravity;
 	private double _defaultLemmingVelocity;
+	private double _defaultPlayerMotionSpeed;
+	private double _defaultPlayerJumpSpeed;
 	
 	public Config()
 	{
@@ -24,6 +28,8 @@ public class Config
 		_tileHeight = 30;
 		_defaultGravity = 10 * 9.81; // note: pixels/s^2 not m/s^2
 		_defaultLemmingVelocity = 100;
+		_defaultPlayerMotionSpeed = 200;
+		_defaultPlayerJumpSpeed = 100;
 	}
 	
 	public int paintFps()
@@ -56,6 +62,17 @@ public class Config
 		return _defaultLemmingVelocity;
 	}
 	
+	public double defaultPlayerMotionSpeed()
+	{
+		return _defaultPlayerMotionSpeed;
+	}
+	
+	public double defaultPlayerJumpSpeed()
+	{
+		return _defaultPlayerJumpSpeed;
+	}
+	
+	/// defines which levels are in the game.
 	public void loadLevels()
 	{
 		LevelManager mgr = Game.instance().levelManager();
@@ -72,6 +89,27 @@ public class Config
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+	}
+	
+	/// defines which keys the game responds to.
+	public FlockKeyListener.Key keyForCode(int keyCode)
+	{
+		switch(keyCode)
+		{
+		case KeyEvent.VK_UP:
+			return FlockKeyListener.Key.Jump;
+		case KeyEvent.VK_DOWN:
+			return FlockKeyListener.Key.PickUpItem;
+		case KeyEvent.VK_LEFT:
+			return FlockKeyListener.Key.Left;
+		case KeyEvent.VK_RIGHT:
+			return FlockKeyListener.Key.Right;
+		case KeyEvent.VK_X:
+			return FlockKeyListener.Key.UseItem;
+		case KeyEvent.VK_Z:
+			return FlockKeyListener.Key.TimeFreeze;
+		default:
+			return FlockKeyListener.Key.None;
+		}
 	}
 }

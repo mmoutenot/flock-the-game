@@ -68,20 +68,6 @@ abstract public class Level
 		return copy;
 	}
 	
-	/**
-	 * Returns a copy of the PlayerEntity of this level.
-	 * entities() must contain a single PlayerEntity.
-	 */
-	public PlayerEntity player()
-	{
-		for(Entity ent: _entities)
-		{
-			if(ent instanceof PlayerEntity)
-				return (PlayerEntity)ent;
-		}
-		return null;
-	}
-	
 	/// Reads the tile info from disk.
 	// FIXME: unsure where to best handle exceptions.
 	public void read() throws Exception

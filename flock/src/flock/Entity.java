@@ -121,8 +121,8 @@ abstract public class Entity extends Tile
 		_velY += _accelY * sec;
 		_x += _velX * sec;
 		_y += _velY * sec;
-		_rect.x=(int) _x;
-		_rect.y=(int) _y;
+		_rect.x = (int)_x;
+		_rect.y = (int)_y;
 		
 		doUpdate(ms);
 		_lastTime = System.currentTimeMillis();
