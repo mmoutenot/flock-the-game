@@ -28,15 +28,6 @@ public class CollisionManager
 	{
 		Tile[] tiles = getEntityTiles(e);
 		
-		if ((tiles[0] instanceof WallTile || tiles[1] instanceof WallTile) && e.getVelY() < 0)
-		{
-			e.setUpperWall(true);
-		}
-		else
-		{
-			e.setUpperWall(false);
-		}
-		
 		if ((tiles[2] instanceof WallTile || tiles[3] instanceof WallTile) && 
 				!(tiles[0] instanceof WallTile || tiles[1] instanceof WallTile))
 		{
@@ -67,8 +58,6 @@ public class CollisionManager
 			e.setRightWall(false);
 		}
 		
-		
-		
 		if ((tiles[0] instanceof WallTile || tiles[2] instanceof WallTile) && !e.againstLowerWall())
 		{
 			e.setLeftWall(true);
@@ -82,6 +71,16 @@ public class CollisionManager
 		else
 		{
 			e.setLeftWall(false);
+		}
+		
+		if ((tiles[0] instanceof WallTile || tiles[1] instanceof WallTile) && e.getVelY() < 0)
+		{
+			if (!(e.againstLeftWall() || e.againstRightWall()))
+				e.setUpperWall(true);
+		}
+		else
+		{
+			e.setUpperWall(false);
 		}
 	}
 	
