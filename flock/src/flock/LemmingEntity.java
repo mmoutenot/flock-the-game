@@ -3,6 +3,7 @@ package flock;
 /// An entity representing a lemming.
 public class LemmingEntity extends Entity
 {
+	private boolean _headedLeft;
 	public LemmingEntity(double x, double y)
 	{
 		super("lemming", x, y);
@@ -20,19 +21,34 @@ public class LemmingEntity extends Entity
 	private void init()
 	{
 		_velX = Game.instance().config().defaultLemmingVelocity();
+		_headedLeft = false;
 	}
 
 	public void doUpdate(long msElapsed)
 	{
-		//don't fall if on the ground -- this may be better placed in a superclass?
-		if(againstLowerWall())
+		if (againstLowerWall() && _headedLeft)
 		{
-			_velY = 0;
-			_accelY = 0;
+			if (againstLeftWall())
+			{
+				_velX = Game.instance().config().defaultLemmingVelocity();
+				_headedLeft = false;
+			}
+			else
+			{
+				_velX = -Game.instance().config().defaultLemmingVelocity();
+			}
 		}
-		else
+		else if (againstLowerWall() && !_headedLeft)
 		{
-			_accelY = Game.instance().config().defaultGravity();
+			if (againstRightWall())
+			{
+				_velX = -Game.instance().config().defaultLemmingVelocity();
+				_headedLeft = true;
+			}
+			else
+			{
+				_velX = Game.instance().config().defaultLemmingVelocity();
+			}
 		}
 	}
 }

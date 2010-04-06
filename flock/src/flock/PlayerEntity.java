@@ -15,7 +15,23 @@ public class PlayerEntity extends Entity
 		
 	}
 	
-	@Override
+	public void doGravity()
+	{
+		if(againstLowerWall() && !_jumping)
+		{
+			_velY = 0;
+			_accelY = 0;
+		}
+		else if (againstLowerWall() && _velY > 0)
+		{
+			_jumping = false;
+		}
+		else
+		{
+			_accelY = Game.instance().config().defaultGravity();
+		}
+	}
+
 	public void doUpdate(long msElapsed)
 	{
 		// If we have a tool, update its position to match ours.
@@ -23,20 +39,6 @@ public class PlayerEntity extends Entity
 		{
 			_tool.setX(_x);
 			_tool.setY(_y);
-		}
-		
-		if(againstLowerWall() && !_jumping)
-		{
-			_velY = 0;
-			_accelY = 0;
-		}
-		else if (againstLowerWall())
-		{
-			_jumping = false;
-		}
-		else
-		{
-			_accelY = Game.instance().config().defaultGravity();
 		}
 		
 		if(againstUpperWall())
