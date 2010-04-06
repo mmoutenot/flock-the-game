@@ -22,10 +22,17 @@ public class LemmingEntity extends Entity
 		_velX = Game.instance().config().defaultLemmingVelocity();
 	}
 
-	@Override
 	public void doUpdate(long msElapsed)
 	{
-		// TODO Auto-generated method stub
-
+		//don't fall if on the ground -- this may be better placed in a superclass?
+		if(againstLowerWall())
+		{
+			_velY = 0;
+			_accelY = 0;
+		}
+		else
+		{
+			_accelY = Game.instance().config().defaultGravity();
+		}
 	}
 }

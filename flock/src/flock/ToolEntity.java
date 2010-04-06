@@ -14,6 +14,7 @@ abstract public class ToolEntity extends Entity
 	{
 		super(id, x, y);
 		_visible = true;
+		_accelY = 0;
 	}
 	
 	/// Draw only if not held by the user.
@@ -32,6 +33,11 @@ abstract public class ToolEntity extends Entity
 	public void drop()
 	{
 		_visible = true;
+	}
+	
+	public void doUpdate()
+	{
+		
 	}
 	
 	abstract public void use();
