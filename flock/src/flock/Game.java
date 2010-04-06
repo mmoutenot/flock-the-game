@@ -153,6 +153,8 @@ public class Game extends JFrame implements Runnable
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private ArrayList<ToolEntity> _toolEntities;
+	private ArrayList<LemmingEntity> _lemmingEntities;
+	private ArrayList<Entity> _killList;
 	private PlayerEntity _player;
 	private boolean _timeFreeze;
 	
@@ -212,12 +214,16 @@ public class Game extends JFrame implements Runnable
 		// Find the player and all ToolEntities.
 		_player = null;
 		_toolEntities = new ArrayList<ToolEntity>();
+		_lemmingEntities = new ArrayList<LemmingEntity>();
+		_killList = new ArrayList<Entity>();
 		for(Entity ent: _entities)
 		{
 			if(ent instanceof PlayerEntity)
 				_player = (PlayerEntity)ent;
 			else if(ent instanceof ToolEntity)
 				_toolEntities.add((ToolEntity)ent);
+			else if (ent instanceof LemmingEntity)
+				_lemmingEntities.add((LemmingEntity)ent);
 		}
 		if(_player == null)
 		{
@@ -338,17 +344,34 @@ public class Game extends JFrame implements Runnable
 			for(Entity ent: _entities)
 			{
 				ent.update();
-				_colman.correct(ent);
-				//System.out.println(_player.jumping());
-				// TODO figure out what to do about collisions...
-				
+				_colman.correctWalls(ent);
 			}
+			_colman.correctLemmings();
+			doKillList();
 			
 			_keyman.update();
 		}
 	}
 	
+	//slates ent for removal at the end of the tick
+	public void kill(Entity ent)
+	{
+		_killList.add(ent);
+	}
 	
+	//removes all entities that died in the previous tick
+	public void doKillList()
+	{
+		for (Entity ent : _killList)
+		{
+			_entities.remove(ent);
+			if (ent instanceof LemmingEntity)
+			{
+				_lemmingEntities.remove(ent);
+			}
+			ent.die();
+		}
+	}
 	
 	/// Returns an appropriate title for the game window.
 	public String windowTitle()
@@ -406,6 +429,11 @@ public class Game extends JFrame implements Runnable
 	public Tile[][] getTiles()
 	{
 		return _tiles;
+	}
+	
+	public ArrayList<LemmingEntity> getLemmings()
+	{
+		return _lemmingEntities;
 	}
 	
 	public void setTimeFreeze(boolean freeze)
