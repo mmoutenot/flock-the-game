@@ -25,6 +25,7 @@ abstract public class Entity extends Tile
 	protected double _accelX;
 	protected double _accelY;
 	protected boolean _frozen;
+	protected boolean _dead;
 	protected boolean _againstLeftWall;
 	protected boolean _againstRightWall;
 	protected boolean _againstUpperWall;
@@ -155,6 +156,9 @@ abstract public class Entity extends Tile
 	 */
 	public void update()
 	{
+		if (_dead)
+			return;
+		
 		final long ms = elapsedTime();
 		final double sec = ms / 1000.0;
 		
@@ -254,5 +258,21 @@ abstract public class Entity extends Tile
 	public boolean againstLowerWall()
 	{
 		return _againstLowerWall;
+	}
+	
+	public Rectangle getRect()
+	{
+		return _rect;
+	}
+	
+	public boolean intersects(Entity other)
+	{
+		return _rect.intersects(other.getRect());
+	}
+	
+	public void die()
+	{
+		_dead = true;
+		_image = null;
 	}
 }

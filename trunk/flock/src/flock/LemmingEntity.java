@@ -26,7 +26,7 @@ public class LemmingEntity extends Entity
 
 	public void doUpdate(long msElapsed)
 	{
-		if (againstLowerWall() && _headedLeft)
+		/*if (againstLowerWall() && _headedLeft)
 		{
 			if (againstLeftWall())
 			{
@@ -49,6 +49,17 @@ public class LemmingEntity extends Entity
 			{
 				_velX = Game.instance().config().defaultLemmingVelocity();
 			}
+		}*/
+		
+		if (_headedLeft && againstLeftWall())
+		{
+			_velX = Game.instance().config().defaultLemmingVelocity();
+			_headedLeft = false;
+		}
+		else if (!_headedLeft && againstRightWall())
+		{
+			_velX = -Game.instance().config().defaultLemmingVelocity();
+			_headedLeft = true;
 		}
 	}
 }
