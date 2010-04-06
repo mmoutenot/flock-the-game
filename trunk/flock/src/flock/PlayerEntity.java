@@ -7,13 +7,12 @@ package flock;
 public class PlayerEntity extends Entity
 {
 	private ToolEntity _tool = null;
+	private boolean _jumping;
 	
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
 		
-		// TODO move this to Entity once we have collision detection with walls.
-		_accelY = Game.instance().config().defaultGravity();
 	}
 	
 	@Override
@@ -26,17 +25,25 @@ public class PlayerEntity extends Entity
 			_tool.setY(_y);
 		}
 		
-		// TODO once we have collision with walls
-		
-		// for now:
-		if(_y > 500)
+		if(againstLowerWall() && !_jumping)
 		{
 			_velY = 0;
 			_accelY = 0;
 		}
+		else if (againstLowerWall())
+		{
+			_jumping = false;
+		}
 		else
 		{
 			_accelY = Game.instance().config().defaultGravity();
+		}
+		
+		if(againstUpperWall())
+		{
+			_velY = 0;
+			_accelY = Game.instance().config().defaultGravity();
+			setUpperWall(false);			
 		}
 	}
 	
@@ -71,5 +78,20 @@ public class PlayerEntity extends Entity
 			return;
 		_tool.use();
 		// TODO figure out what to do about number of uses. Probably make tools single-use.
+	}
+	
+	public boolean jumping()
+	{
+		return _jumping;
+	}
+	
+	public void setJumping(boolean jump)
+	{
+		_jumping = jump;
+	}
+	
+	public void setLowerWall(boolean againstWall)
+	{
+		_againstLowerWall = againstWall;
 	}
 }

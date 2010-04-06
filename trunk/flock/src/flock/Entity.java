@@ -25,17 +25,28 @@ abstract public class Entity extends Tile
 	protected double _accelX;
 	protected double _accelY;
 	protected boolean _frozen;
+	protected boolean _againstLeftWall;
+	protected boolean _againstRightWall;
+	protected boolean _againstUpperWall;
+	protected boolean _againstLowerWall;
+	
 	
 	public Entity(String id)
 	{
 		super(id);
 		init(0, 0);
+		_accelY = Game.instance().config().defaultGravity();
+		_againstLeftWall = false;
+		_againstRightWall = false;
 	}
 	
 	public Entity(String id, double x, double y)
 	{
 		super(id);
 		init(x, y);
+		_accelY = Game.instance().config().defaultGravity();
+		_againstLeftWall = false;
+		_againstRightWall = false;
 	}
 	
 	/// "real" constructor (to avoid duplication)
@@ -111,6 +122,16 @@ abstract public class Entity extends Tile
 		update();
 	}
 	
+	public double getVelX()
+	{
+		return _velX;
+	}
+	
+	public double getVelY()
+	{
+		return _velY;
+	}
+	
 	/// since _lastTime;
 	public long elapsedTime()
 	{
@@ -180,5 +201,45 @@ abstract public class Entity extends Tile
 			_accelY=0;
 			_velY=0;
 		}
+	}
+	
+	public void setLeftWall(boolean againstWall)
+	{
+		_againstLeftWall = againstWall;
+	}
+	
+	public void setRightWall(boolean againstWall)
+	{
+		_againstRightWall = againstWall;
+	}
+	
+	public boolean againstLeftWall()
+	{
+		return _againstLeftWall;
+	}
+	
+	public boolean againstRightWall()
+	{
+		return _againstRightWall;
+	}
+	
+	public void setUpperWall(boolean againstWall)
+	{
+		_againstUpperWall = againstWall;
+	}
+	
+	public void setLowerWall(boolean againstWall)
+	{
+		_againstLowerWall = againstWall;
+	}
+	
+	public boolean againstUpperWall()
+	{
+		return _againstUpperWall;
+	}
+	
+	public boolean againstLowerWall()
+	{
+		return _againstLowerWall;
 	}
 }

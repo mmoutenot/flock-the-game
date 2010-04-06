@@ -12,6 +12,7 @@ public class Tile implements Cloneable
 	protected Image _image;
 	protected double _gravity;
 	protected boolean _solid;
+	protected int _height, _width;
 	
 	public Tile()
 	{
@@ -71,6 +72,16 @@ public class Tile implements Cloneable
 	public boolean isSolid()
 	{
 		return _solid;
+	}
+	
+	public int height()
+	{
+		return _image.getHeight(null);
+	}
+	
+	public int width()
+	{
+		return _image.getWidth(null);
 	}
 	
 	/// override if you want to do something other than draw an image.
