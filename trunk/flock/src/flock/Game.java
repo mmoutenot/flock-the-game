@@ -93,10 +93,9 @@ public class Game extends JFrame implements Runnable
 				// remove the !_player.jumping() term to allow double-jumping
 				if (!_player.againstUpperWall() && !_player.jumping())
 				{
-					_player.setVelY(-config().defaultPlayerJumpSpeed());
 					_player.setJumping(true);
+					_player.setVelY(-config().defaultPlayerJumpSpeed());
 				}
-				//System.out.println(_player.jumping());
 				break;
 			case TimeFreeze:
 				setTimeFreeze(!_timeFreeze);
@@ -146,6 +145,7 @@ public class Game extends JFrame implements Runnable
 	private ImageManager _imageman = null;
 	private LevelManager _levelman = null;
 	private KeyManager _keyman = null;
+	private CollisionManager _colman = null;
 	private boolean _isRunning = false;
 	private Thread _animator;
 	private double _actualFps;
@@ -170,6 +170,7 @@ public class Game extends JFrame implements Runnable
 		_config = new Config();
 		_imageman = new ImageManager();
 		_levelman = new LevelManager();
+		_colman = new CollisionManager(this);
 		
 		if(!testing)
 		{
@@ -337,7 +338,7 @@ public class Game extends JFrame implements Runnable
 			for(Entity ent: _entities)
 			{
 				ent.update();
-				correct(ent);
+				_colman.correct(ent);
 				//System.out.println(_player.jumping());
 				// TODO figure out what to do about collisions...
 				
@@ -347,77 +348,7 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
-	public Tile[] getEntityTiles(Entity e)
-	{
-		Tile[] result = new Tile[4];
-		
-		result[0] = _tiles[9][9];
-		result[0] = _tiles[(int)(e._y / _config.tileHeight())][(int)(e._x / _config.tileWidth())];
-		result[1] = _tiles[(int)(e._y / _config.tileHeight())][(int)((e._x + e.width()) / _config.tileWidth())];
-		result[2] = _tiles[(int)((e._y + e.height()) / _config.tileHeight())][(int)(e._x / _config.tileWidth())];
-		result[3] = _tiles[(int)((e._y + e.height()) / _config.tileHeight())][(int)((e._x + e.width()) / _config.tileWidth())];
-		
-		return result;
-	}
 	
-	public void correct(Entity e)
-	{
-		Tile[] tiles = getEntityTiles(e);
-		
-		if ((tiles[0] instanceof WallTile || tiles[1] instanceof WallTile) && _player.getVelY() < 0)
-		{
-			e.setUpperWall(true);
-		}
-		else
-		{
-			e.setUpperWall(false);
-		}
-		
-		if ((tiles[1] instanceof WallTile || tiles[3] instanceof WallTile) && !_player.againstLowerWall())
-		{
-			e.setRightWall(true);
-			e.setVelX(0);
-		}
-		else if ((tiles[1] instanceof WallTile && tiles[3] instanceof WallTile))
-		{
-			e.setRightWall(true);
-			e.setVelX(0);
-		}
-		else
-		{
-			e.setRightWall(false);
-		}
-		
-		if ((tiles[2] instanceof WallTile || tiles[3] instanceof WallTile) && 
-				!(tiles[0] instanceof WallTile || tiles[1] instanceof WallTile))
-		{
-			e.setLowerWall(true);
-			
-		}
-		else if ((tiles[2] instanceof WallTile && tiles[3] instanceof WallTile))
-		{
-			e.setLowerWall(true);
-		}
-		else
-		{
-			e.setLowerWall(false);
-		}
-		
-		if ((tiles[0] instanceof WallTile || tiles[2] instanceof WallTile) && !_player.againstLowerWall())
-		{
-			e.setLeftWall(true);
-			e.setVelX(0);
-		}
-		else if ((tiles[0] instanceof WallTile && tiles[2] instanceof WallTile))
-		{
-			e.setLeftWall(true);
-			e.setVelX(0);
-		}
-		else
-		{
-			e.setLeftWall(false);
-		}
-	}
 	
 	/// Returns an appropriate title for the game window.
 	public String windowTitle()
@@ -470,6 +401,11 @@ public class Game extends JFrame implements Runnable
 	public LevelManager levelManager()
 	{
 		return _levelman;
+	}
+	
+	public Tile[][] getTiles()
+	{
+		return _tiles;
 	}
 	
 	public void setTimeFreeze(boolean freeze)

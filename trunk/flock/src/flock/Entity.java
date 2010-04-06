@@ -167,9 +167,22 @@ abstract public class Entity extends Tile
 			_x += _velX * sec;
 			_y += _velY * sec;
 		}
-		
+		doGravity();
 		doUpdate(ms);
 		_lastTime = System.currentTimeMillis();
+	}
+	
+	public void doGravity()
+	{
+		if (againstLowerWall())
+		{
+			_accelY = 0;
+			_velY = 0;
+		}
+		else
+		{
+			_accelY = Game.instance().config().defaultGravity();
+		}
 	}
 	
 	/// subclasses must override / define.
