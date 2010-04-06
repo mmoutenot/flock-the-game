@@ -149,7 +149,7 @@ public class Game extends JFrame implements Runnable
 	private boolean _isRunning = false;
 	private Thread _animator;
 	private double _actualFps;
-	private Level _currentLevel;
+	private Level _currentLevel = null;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private ArrayList<ToolEntity> _toolEntities;
@@ -294,9 +294,9 @@ public class Game extends JFrame implements Runnable
 					//Graphics2D g = (Graphics2D) getContentPane().getGraphics();
 					
 					// Render
-					if(g == null)
+					if(g == null || _currentLevel == null)
 					{
-						System.out.println("Animator thread skipping a beat -- no graphics yet.");
+						System.out.println("Animator thread skipping a beat -- no graphics or level yet.");
 						continue;
 					}
 					g.clearRect(0, 0, getWidth(), getHeight());
