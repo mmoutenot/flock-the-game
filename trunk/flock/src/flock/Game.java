@@ -91,7 +91,7 @@ public class Game extends JFrame implements Runnable
 				break;
 			case Jump:
 				// remove the !_player.jumping() term to allow double-jumping
-				if (!_player.againstUpperWall() && !_player.jumping())
+				if (!_player.againstUpperWall() && !_player.isJumping())
 				{
 					_player.setJumping(true);
 					_player.setVelY(-config().defaultPlayerJumpSpeed());
@@ -173,7 +173,7 @@ public class Game extends JFrame implements Runnable
 		_config = new Config();
 		_imageman = new ImageManager();
 		_levelman = new LevelManager();
-		_colman = new CollisionManager(this);
+		_colman = new CollisionManager();
 		
 		if(!testing)
 		{

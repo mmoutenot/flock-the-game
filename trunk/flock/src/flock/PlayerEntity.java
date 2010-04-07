@@ -7,12 +7,11 @@ package flock;
 public class PlayerEntity extends Entity
 {
 	private ToolEntity _tool = null;
-	private boolean _jumping;
+	private boolean _jumping = false;
 	
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
-		
 	}
 	
 	public void doGravity()
@@ -47,7 +46,6 @@ public class PlayerEntity extends Entity
 			_accelY = Game.instance().config().defaultGravity();
 			setUpperWall(false);			
 		}
-		
 	}
 	
 	/// Returns currently held tool, or null if none.
@@ -83,7 +81,7 @@ public class PlayerEntity extends Entity
 		// TODO figure out what to do about number of uses. Probably make tools single-use.
 	}
 	
-	public boolean jumping()
+	public boolean isJumping()
 	{
 		return _jumping;
 	}

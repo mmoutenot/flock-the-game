@@ -4,19 +4,45 @@ import java.util.ArrayList;
 
 public class CollisionManager 
 {
-	public CollisionManager(Game g)
-	{
-	}
-	
 	public Tile[] getEntityTiles(Entity e)
 	{
+		final Tile[][] gameTiles = Game.instance().getTiles();
+		final int tH = Game.instance().config().tileHeight(),
+		          tW = Game.instance().config().tileWidth(),
+		          tileRows = gameTiles.length,
+		          tileCols = gameTiles[0].length;
+		
+		// Get the coordinates of the tiles this entity is overlapping with.
+		// FIXME: assumes there are exactly four of them.
+		int[][] tc = new int[4][2];
+		tc[0][0] = (int)(e._y / tH);
+		tc[0][1] = (int)(e._x / tW);
+		tc[1][0] = tc[0][0];
+		tc[1][1] = (int)((e._x + e.width()) / tW);
+		tc[2][0] = (int)((e._y + e.height()) / tH);
+		tc[2][1] = tc[0][1];
+		tc[3][0] = tc[2][0];
+		tc[3][1] = tc[1][1];
+		
+		// Adjust coords in case entity is partly off-screen.
+		for(int i = 0; i < 4; i++)
+		{
+			tc[i][0] = Math.max(tc[i][0], 0);
+			tc[i][0] = Math.min(tc[i][0], tileRows - 1);
+			tc[i][1] = Math.max(tc[i][1], 0);
+			tc[i][1] = Math.min(tc[i][1], tileCols - 1);
+		}
+		System.out.println("Entity at " + e._x + " x " + e._y + " has tiles:");
+		System.out.println("       " + tc[0][0] + "x" + tc[0][1] + ", " +
+				                       tc[1][0] + "x" + tc[1][1] + ", " +
+				                       tc[2][0] + "x" + tc[2][1] + ", " +
+				                       tc[3][0] + "x" + tc[3][1] + ".");
+		
 		Tile[] result = new Tile[4];
-		
-		result[0] = Game.instance().getTiles()[(int)(e._y / Game.instance().config().tileHeight())][(int)(e._x / Game.instance().config().tileWidth())];
-		result[1] = Game.instance().getTiles()[(int)(e._y / Game.instance().config().tileHeight())][(int)((e._x + e.width()) / Game.instance().config().tileWidth())];
-		result[2] = Game.instance().getTiles()[(int)((e._y + e.height()) / Game.instance().config().tileHeight())][(int)(e._x / Game.instance().config().tileWidth())];
-		result[3] = Game.instance().getTiles()[(int)((e._y + e.height()) / Game.instance().config().tileHeight())][(int)((e._x + e.width()) / Game.instance().config().tileWidth())];
-		
+		result[0] = gameTiles[tc[0][0]][tc[0][1]];
+		result[1] = gameTiles[tc[1][0]][tc[1][1]];
+		result[2] = gameTiles[tc[2][0]][tc[2][1]];
+		result[3] = gameTiles[tc[3][0]][tc[3][1]];
 		return result;
 	}
 	

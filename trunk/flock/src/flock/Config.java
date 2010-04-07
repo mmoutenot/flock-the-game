@@ -88,7 +88,9 @@ public class Config
 		{
 			LevelDemo lDemo = new LevelDemo();
 			mgr.addLevel(lDemo);
-			mgr.setDefaultLevel(lDemo);
+			Level lZero = new LevelZero();
+			mgr.addLevel(lZero);
+			mgr.setDefaultLevel(lZero);
 		}
 		catch (Exception e)
 		{
