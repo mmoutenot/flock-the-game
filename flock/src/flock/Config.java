@@ -115,6 +115,8 @@ public class Config
 			return FlockKeyListener.Key.UseItem;
 		case KeyEvent.VK_Z:
 			return FlockKeyListener.Key.TimeFreeze;
+		case KeyEvent.VK_P:
+			return FlockKeyListener.Key.Pause;
 		default:
 			return FlockKeyListener.Key.None;
 		}
