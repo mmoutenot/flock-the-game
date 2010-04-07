@@ -3,6 +3,7 @@ package flock;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -164,6 +165,7 @@ public class Game extends JFrame implements Runnable
 	private DoorEntity _door;
 	private boolean _timeFreeze;
 	private boolean _paused = false;;
+	private boolean _drawPaused = false;
 	/// If in debug mode, wait for a key press before doing an update.
 	private boolean _debugPressed = false;
 	
@@ -337,6 +339,11 @@ public class Game extends JFrame implements Runnable
 					for(Entity ent: _entities)
 						ent.draw(g);
 					
+					if(!_drawPaused){
+						g.setColor(Color.black);
+						g.drawString("PAUSED", 250, 250);
+					}
+					
 					// Dispose the graphics
 					g.dispose();
 					
@@ -498,18 +505,14 @@ public class Game extends JFrame implements Runnable
 	public void setPaused(boolean paused)
 	{
 		_paused = paused;
+		_drawPaused = !_drawPaused;
 		for(Entity ent : _entities)
 		{
 			ent.setPaused(paused);
 		}
 		if(paused){
 			System.out.println("Paused!");
-			/*///Trying to put some sort of overlay text. Having trouble initializing g
-			BufferStrategy strategy = _canvas.getBufferStrategy();
-			Graphics2D g = Graphics2D();
-			g.setColor(Color.black);
-			g.drawString("PAUSED", 50, 50);
-			*/
+			
 		}
 	}
 	
