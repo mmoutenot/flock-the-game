@@ -4,22 +4,18 @@ import java.util.ArrayList;
 
 public class CollisionManager 
 {
-	private Game _game;
-	
 	public CollisionManager(Game g)
 	{
-		_game = g;
 	}
 	
 	public Tile[] getEntityTiles(Entity e)
 	{
 		Tile[] result = new Tile[4];
 		
-		result[0] = _game.getTiles()[9][9];
-		result[0] = _game.getTiles()[(int)(e._y / _game.config().tileHeight())][(int)(e._x / _game.config().tileWidth())];
-		result[1] = _game.getTiles()[(int)(e._y / _game.config().tileHeight())][(int)((e._x + e.width()) / _game.config().tileWidth())];
-		result[2] = _game.getTiles()[(int)((e._y + e.height()) / _game.config().tileHeight())][(int)(e._x / _game.config().tileWidth())];
-		result[3] = _game.getTiles()[(int)((e._y + e.height()) / _game.config().tileHeight())][(int)((e._x + e.width()) / _game.config().tileWidth())];
+		result[0] = Game.instance().getTiles()[(int)(e._y / Game.instance().config().tileHeight())][(int)(e._x / Game.instance().config().tileWidth())];
+		result[1] = Game.instance().getTiles()[(int)(e._y / Game.instance().config().tileHeight())][(int)((e._x + e.width()) / Game.instance().config().tileWidth())];
+		result[2] = Game.instance().getTiles()[(int)((e._y + e.height()) / Game.instance().config().tileHeight())][(int)(e._x / Game.instance().config().tileWidth())];
+		result[3] = Game.instance().getTiles()[(int)((e._y + e.height()) / Game.instance().config().tileHeight())][(int)((e._x + e.width()) / Game.instance().config().tileWidth())];
 		
 		return result;
 	}
@@ -41,6 +37,8 @@ public class CollisionManager
 		else
 		{
 			e.setLowerWall(false);
+			if (e instanceof PlayerEntity)
+				((PlayerEntity)e).setJumping(true);
 		}
 		
 		if ((tiles[1] instanceof WallTile || tiles[3] instanceof WallTile) && !e.againstLowerWall())
@@ -75,8 +73,10 @@ public class CollisionManager
 		
 		if ((tiles[0] instanceof WallTile || tiles[1] instanceof WallTile) && e.getVelY() < 0)
 		{
-			if (!(e.againstLeftWall() || e.againstRightWall()))
+			if (!(e.againstLeftWall() || e.againstRightWall()) || (e.againstLeftWall() && e.againstRightWall()))
+			{
 				e.setUpperWall(true);
+			}
 		}
 		else
 		{
@@ -87,7 +87,7 @@ public class CollisionManager
 	//kill lemmings if two lemmings of opposite alignment collide
 	public void correctLemmings()
 	{
-		ArrayList<LemmingEntity> lemmings = _game.getLemmings();
+		ArrayList<LemmingEntity> lemmings = Game.instance().getLemmings();
 		for (LemmingEntity lemming: lemmings)
 		{
 			if (!(lemming instanceof AntiLemmingEntity))
@@ -99,8 +99,8 @@ public class CollisionManager
 						if (anti.intersects(lemming))
 						{
 							//System.out.println("They should have died");
-							_game.kill(anti);
-							_game.kill(lemming);
+							Game.instance().kill(anti);
+							Game.instance().kill(lemming);
 						}
 					}
 				}
