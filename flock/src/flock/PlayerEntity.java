@@ -7,28 +7,10 @@ package flock;
 public class PlayerEntity extends Entity
 {
 	private ToolEntity _tool = null;
-	private boolean _jumping = false;
 	
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
-	}
-	
-	public void doGravity()
-	{
-		if(againstLowerWall() && !_jumping)
-		{
-			_velY = 0;
-			_accelY = 0;
-		}
-		else if (againstLowerWall() && _velY > 0)
-		{
-			_jumping = false;
-		}
-		else
-		{
-			_accelY = Game.instance().config().defaultGravity();
-		}
 	}
 
 	public void doUpdate(long msElapsed)
@@ -38,13 +20,6 @@ public class PlayerEntity extends Entity
 		{
 			_tool.setX(_x);
 			_tool.setY(_y);
-		}
-		
-		if(againstUpperWall())
-		{
-			_velY = 0;
-			_accelY = Game.instance().config().defaultGravity();
-			setUpperWall(false);			
 		}
 	}
 	
@@ -81,18 +56,10 @@ public class PlayerEntity extends Entity
 		// TODO figure out what to do about number of uses. Probably make tools single-use.
 	}
 	
-	public boolean isJumping()
+	/// Jumps if it's on top of solid ground.
+	public void tryJump()
 	{
-		return _jumping;
-	}
-	
-	public void setJumping(boolean jump)
-	{
-		_jumping = jump;
-	}
-	
-	public void setLowerWall(boolean againstWall)
-	{
-		_againstLowerWall = againstWall;
+		if(_space.y + _space.height - _y < 3)
+			setVelY(-Game.instance().config().defaultPlayerJumpSpeed());
 	}
 }

@@ -3,7 +3,6 @@ package flock;
 /// An entity representing a lemming.
 public class LemmingEntity extends Entity
 {
-	private boolean _headedLeft;
 	public LemmingEntity(double x, double y)
 	{
 		super("lemming", x, y);
@@ -21,20 +20,13 @@ public class LemmingEntity extends Entity
 	private void init()
 	{
 		_velX = Game.instance().config().defaultLemmingVelocity();
-		_headedLeft = false;
 	}
 
+	/// Toggle direction of lemming when it hits something solid.
+	@Override
 	public void doUpdate(long msElapsed)
-	{		
-		if (_headedLeft && againstLeftWall())
-		{
-			_velX = Game.instance().config().defaultLemmingVelocity();
-			_headedLeft = false;
-		}
-		else if (!_headedLeft && againstRightWall())
-		{
-			_velX = -Game.instance().config().defaultLemmingVelocity();
-			_headedLeft = true;
-		}
+	{
+		if(_x - _space.x < 2 || _space.x + _space.width - _x < 2)
+			setVelX(-_velX);
 	}
 }

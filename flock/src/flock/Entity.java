@@ -1,8 +1,10 @@
 package flock;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * An Entity is a moving object on the screen.
@@ -25,30 +27,24 @@ abstract public class Entity extends Tile
 	protected double _accelX;
 	protected double _accelY;
 	protected boolean _frozen;
-	protected boolean _dead;
-	protected boolean _againstLeftWall;
-	protected boolean _againstRightWall;
-	protected boolean _againstUpperWall;
-	protected boolean _againstLowerWall;
 	protected boolean _paused;
+	protected boolean _dead;
+	private boolean _debug;
+	
+	/// defines the space around the entity where it can move (i.e. bounded by walls)
+	protected Rectangle2D.Double _space;
 	
 	
 	public Entity(String id)
 	{
 		super(id);
 		init(0, 0);
-		_accelY = Game.instance().config().defaultGravity();
-		_againstLeftWall = false;
-		_againstRightWall = false;
 	}
 	
 	public Entity(String id, double x, double y)
 	{
 		super(id);
 		init(x, y);
-		_accelY = Game.instance().config().defaultGravity();
-		_againstLeftWall = false;
-		_againstRightWall = false;
 	}
 	
 	/// "real" constructor (to avoid duplication)
@@ -58,8 +54,13 @@ abstract public class Entity extends Tile
 		_x = x;
 		_y = y;
 		_velX = _velY = 0;
-		_accelX = _accelY = 0;
-		_frozen = false;
+		_accelX = 0;
+		_accelY = Game.instance().config().defaultGravity();
+		_frozen = true;
+		_paused = false;
+		_dead = false; // FIXME move to LemmingEntity
+		_debug = false;
+		_space = new Rectangle2D.Double();
 		update();
 	}
 	
@@ -130,6 +131,10 @@ abstract public class Entity extends Tile
 		update();
 	}
 	
+	public void setDebug(boolean debug)
+	{
+		_debug = debug;
+	}
 	
 	public double getVelX()
 	{
@@ -152,6 +157,13 @@ abstract public class Entity extends Tile
 		return new Point2D.Double(_x + _rect.width, _y + _rect.height);
 	}
 	
+	/// Show coordinates when printed. 
+	@Override
+	public String toString()
+	{
+		return getClass().getName() + "(" + _x + ", " + _y + ")";
+	}
+	
 	/// Distance from my center to other Entity's center.
 	public double distance(Entity other)
 	{
@@ -172,29 +184,43 @@ abstract public class Entity extends Tile
 		
 		_rect.x = (int)_x;
 		_rect.y = (int)_y;
-		if(!_frozen&&!_paused)
+		if(!_frozen && !_paused)
 		{
+			_space = Game.instance().collisionManager().getSpace(this);
+			_space.width -= _rect.width + 1;
+			_space.height -= _rect.height + 1;
+			
+			// This is where we would go if there were no obstacles.
 			_velX += _accelX * sec;
 			_velY += _accelY * sec;
 			_x += _velX * sec;
 			_y += _velY * sec;
+			
+			// This is where we actually stop due to obstacles.
+			if(_x < _space.x)
+			{
+				_x = _space.x;
+				_velX = 0;
+			}
+			else if(_x > _space.x + _space.width)
+			{
+				_x = _space.x + _space.width;
+				_velX = 0;
+			}
+			if(_y < _space.y)
+			{
+				_y = _space.y;
+				_velY = 0;
+			}
+			else if(_y > _space.y + _space.height)
+			{
+				_y = _space.y + _space.height;
+				_velY = 0;
+			}
+			
+			doUpdate(ms);
 		}
-		doGravity();
-		doUpdate(ms);
 		_lastTime = System.currentTimeMillis();
-	}
-	
-	public void doGravity()
-	{
-		if (againstLowerWall())
-		{
-			_accelY = 0;
-			_velY = 0;
-		}
-		else
-		{
-			_accelY = Game.instance().config().defaultGravity();
-		}
 	}
 	
 	/// subclasses must override / define.
@@ -204,68 +230,12 @@ abstract public class Entity extends Tile
 	public void draw(Graphics2D g)
 	{
 		g.drawImage(_image, _rect.x, _rect.y, null);
-	}
-	
-	/// zeroes out acceleration in a given dimension. axis = 1 for x axis, 2 for y axis, or 0 for both
-	public void stopMovement(int axis)
-	{
-		if(axis==0)
+		if(_debug)
 		{
-			_accelX=0;
-			_accelY=0;
-			_velX=0;
-			_velY=0;
+			g.setColor(Color.RED);
+			g.drawRect((int)_space.x, (int)_space.y,
+					   (int)_space.width + _rect.width, (int)_space.height + _rect.height);
 		}
-		if(axis==1)
-		{
-			_accelX=0;
-			_velX=0;
-		}
-		if(axis==2)
-		{
-			_accelY=0;
-			_velY=0;
-		}
-	}
-	
-	public void setLeftWall(boolean againstWall)
-	{
-		_againstLeftWall = againstWall;
-	}
-	
-	public void setRightWall(boolean againstWall)
-	{
-		_againstRightWall = againstWall;
-	}
-	
-	public boolean againstLeftWall()
-	{
-		return _againstLeftWall;
-	}
-	
-	public boolean againstRightWall()
-	{
-		return _againstRightWall;
-	}
-	
-	public void setUpperWall(boolean againstWall)
-	{
-		_againstUpperWall = againstWall;
-	}
-	
-	public void setLowerWall(boolean againstWall)
-	{
-		_againstLowerWall = againstWall;
-	}
-	
-	public boolean againstUpperWall()
-	{
-		return _againstUpperWall;
-	}
-	
-	public boolean againstLowerWall()
-	{
-		return _againstLowerWall;
 	}
 	
 	public Rectangle getRect()

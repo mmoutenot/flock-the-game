@@ -6,6 +6,14 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * A level for the game.
+ * Subclasses should:
+ * 1) Implement a constructor that calls the super constructor with the
+ *    appropriate string id (which loads the tiles from the appropriate file)
+ * 2) Create entities and add them to _entities. Entities are drawn in the order
+ *    they are found in _entities, so the PlayerEntity should be added last.
+ */
 abstract public class Level
 {
 	private String _id;
