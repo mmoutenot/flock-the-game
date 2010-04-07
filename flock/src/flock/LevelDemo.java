@@ -13,5 +13,6 @@ public class LevelDemo extends Level
 		_entities.add(new LemmingEntity(130, 100));
 		//_entities.add(new AntiLemmingEntity(50, 100));
 		_entities.add(new WrenchEntity(250, 50));
+		_entities.add(new DoorEntity(100, 225));
 	}
 }

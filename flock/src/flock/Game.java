@@ -156,6 +156,7 @@ public class Game extends JFrame implements Runnable
 	private ArrayList<LemmingEntity> _lemmingEntities;
 	private ArrayList<Entity> _killList;
 	private PlayerEntity _player;
+	private DoorEntity _door;
 	private boolean _timeFreeze;
 	
 	private Game()
@@ -224,6 +225,8 @@ public class Game extends JFrame implements Runnable
 				_toolEntities.add((ToolEntity)ent);
 			else if (ent instanceof LemmingEntity)
 				_lemmingEntities.add((LemmingEntity)ent);
+			else if (ent instanceof DoorEntity)
+				_door = (DoorEntity)ent;
 		}
 		if(_player == null)
 		{
@@ -434,6 +437,11 @@ public class Game extends JFrame implements Runnable
 	public ArrayList<LemmingEntity> getLemmings()
 	{
 		return _lemmingEntities;
+	}
+	
+	public DoorEntity getDoor()
+	{
+		return _door;
 	}
 	
 	public void setTimeFreeze(boolean freeze)
