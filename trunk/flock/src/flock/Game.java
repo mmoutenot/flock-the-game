@@ -91,15 +91,24 @@ public class Game extends JFrame implements Runnable
 				setTimeFreeze(!_timeFreeze);
 				break;
 			case PickUpItem:
-				ToolEntity pick = findNearestTool();
+			{
+				ToolEntity pick = (ToolEntity)findNearestEntity(ToolEntity.class);
 				if(pick == null) // too far; drop current item
 					_player.dropTool();
 				else
 					_player.pickTool(pick);
 				break;
+			}
 			case UseItem:
 				_player.useTool();
 				break;
+			case Action:
+			{
+				ActionEntity pick = (ActionEntity)findNearestEntity(ActionEntity.class);
+				if(pick != null)
+					pick.action();
+				break;
+			}
 			case Debug:
 				if(_config.isDebugEnabled())
 					_debugPressed = true;
@@ -146,7 +155,6 @@ public class Game extends JFrame implements Runnable
 	private Level _currentLevel = null;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
-	private ArrayList<ToolEntity> _toolEntities;
 	private ArrayList<LemmingEntity> _lemmingEntities;
 	private ArrayList<Entity> _killList;
 	private PlayerEntity _player;
@@ -212,15 +220,12 @@ public class Game extends JFrame implements Runnable
 		
 		// Find the player and all ToolEntities.
 		_player = null;
-		_toolEntities = new ArrayList<ToolEntity>();
 		_lemmingEntities = new ArrayList<LemmingEntity>();
 		_killList = new ArrayList<Entity>();
 		for(Entity ent: _entities)
 		{
 			if(ent instanceof PlayerEntity)
 				_player = (PlayerEntity)ent;
-			else if(ent instanceof ToolEntity)
-				_toolEntities.add((ToolEntity)ent);
 			else if (ent instanceof LemmingEntity)
 				_lemmingEntities.add((LemmingEntity)ent);
 			else if (ent instanceof DoorEntity)
@@ -234,14 +239,16 @@ public class Game extends JFrame implements Runnable
 		_player.setFrozen(false);
 	}
 	
-	private ToolEntity findNearestTool()
+	/// Returns the nearest non-paused entity of type @p type.
+	// TODO document that !paused really means enabled...
+	private Entity findNearestEntity(Class type)
 	{
 		double min = Double.POSITIVE_INFINITY;
-		ToolEntity pick = null;
+		Entity pick = null;
 		
-		for(ToolEntity ent: _toolEntities)
+		for(Entity ent: _entities)
 		{
-			if(ent == _player.tool())
+			if(ent.isPaused() || !type.isInstance(ent))
 				continue;
 			final double dist = _player.distance(ent);
 			System.out.println("Considering " + ent + " at dist " + dist);

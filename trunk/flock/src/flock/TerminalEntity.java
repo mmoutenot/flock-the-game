@@ -1,6 +1,6 @@
 package flock;
 
-public class TerminalEntity extends Entity
+public class TerminalEntity extends ActionEntity
 {
 	public TerminalEntity(double x, double y)
 	{
@@ -10,5 +10,11 @@ public class TerminalEntity extends Entity
 	@Override
 	public void doUpdate(long msElapsed)
 	{
+	}
+	
+	@Override
+	public void action()
+	{
+		System.out.println("boom!");
 	}
 }
