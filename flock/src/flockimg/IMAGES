@@ -3,3 +3,4 @@ TODO license.
 
 imageNotFound.png: /usr/share/icons/oxygen/64x64/status/dialog-error.png
 wrench.png: /usr/share/icons/oxygen/64x64/actions/configure.png
+terminal.png: /usr/share/icons/oxygen/64x64/apps/terminal.png
