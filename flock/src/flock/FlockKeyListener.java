@@ -18,6 +18,7 @@ public abstract class FlockKeyListener implements KeyListener
 		TimeFreeze,
 		PickUpItem,
 		UseItem,
+		Action,
 		Pause,
 		Debug
 	};

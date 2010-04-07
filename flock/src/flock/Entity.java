@@ -146,6 +146,11 @@ abstract public class Entity extends Tile
 		return _velY;
 	}
 	
+	public boolean isPaused()
+	{
+		return _paused;
+	}
+	
 	/// since _lastTime;
 	public long elapsedTime()
 	{
