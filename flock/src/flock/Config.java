@@ -27,10 +27,10 @@ public class Config
 		_updateFps = 60;
 		_tileWidth = 30;
 		_tileHeight = 30;
-		_defaultGravity = 20 * 9.81; // note: pixels/s^2 not m/s^2
+		_defaultGravity = 70 * 9.81; // note: pixels/s^2 not m/s^2
 		_defaultLemmingVelocity = 100;
-		_defaultPlayerMotionSpeed = 100;
-		_defaultPlayerJumpSpeed = 300;
+		_defaultPlayerMotionSpeed = 150;
+		_defaultPlayerJumpSpeed = 350;
 		_defaultPickToolDistance = 50;
 	}
 	
