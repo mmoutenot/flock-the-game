@@ -77,6 +77,11 @@ public class CollisionManager
 			{
 				e.setUpperWall(true);
 			}
+			if (!((tiles[0] instanceof WallTile && tiles[2] instanceof WallTile) ||
+					(tiles[1] instanceof WallTile && tiles[3] instanceof WallTile)))
+			{
+				e.setUpperWall(true);
+			}
 		}
 		else
 		{
@@ -103,6 +108,11 @@ public class CollisionManager
 							Game.instance().kill(lemming);
 						}
 					}
+				}
+				if (lemming.intersects(Game.instance().getDoor()))
+				{
+					Game.instance().kill(lemming);
+					Game.instance().getDoor().enterLemming();
 				}
 			}
 		}
