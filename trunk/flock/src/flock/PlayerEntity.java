@@ -47,6 +47,7 @@ public class PlayerEntity extends Entity
 			_accelY = Game.instance().config().defaultGravity();
 			setUpperWall(false);			
 		}
+		
 	}
 	
 	/// Returns currently held tool, or null if none.

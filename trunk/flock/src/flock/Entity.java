@@ -30,6 +30,7 @@ abstract public class Entity extends Tile
 	protected boolean _againstRightWall;
 	protected boolean _againstUpperWall;
 	protected boolean _againstLowerWall;
+	protected boolean _paused;
 	
 	
 	public Entity(String id)
@@ -123,6 +124,13 @@ abstract public class Entity extends Tile
 		update();
 	}
 	
+	public void setPaused(boolean paused)
+	{
+		_paused = paused;
+		update();
+	}
+	
+	
 	public double getVelX()
 	{
 		return _velX;
@@ -164,7 +172,7 @@ abstract public class Entity extends Tile
 		
 		_rect.x = (int)_x;
 		_rect.y = (int)_y;
-		if(!_frozen)
+		if(!_frozen&&!_paused)
 		{
 			_velX += _accelX * sec;
 			_velY += _accelY * sec;
