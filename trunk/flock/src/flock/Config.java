@@ -20,6 +20,7 @@ public class Config
 	private double _defaultPlayerMotionSpeed;
 	private double _defaultPlayerJumpSpeed;
 	private double _defaultPickToolDistance;
+	private boolean _debugEnabled;
 	
 	public Config()
 	{
@@ -30,8 +31,9 @@ public class Config
 		_defaultGravity = 70 * 9.81; // note: pixels/s^2 not m/s^2
 		_defaultLemmingVelocity = 100;
 		_defaultPlayerMotionSpeed = 150;
-		_defaultPlayerJumpSpeed = 350;
+		_defaultPlayerJumpSpeed = 360;
 		_defaultPickToolDistance = 50;
+		_debugEnabled = false;
 	}
 	
 	public int paintFps()
@@ -79,6 +81,11 @@ public class Config
 		return _defaultPickToolDistance;
 	}
 	
+	public boolean isDebugEnabled()
+	{
+		return _debugEnabled;
+	}
+	
 	/// defines which levels are in the game.
 	public void loadLevels()
 	{
@@ -113,6 +120,8 @@ public class Config
 			return FlockKeyListener.Key.Left;
 		case KeyEvent.VK_RIGHT:
 			return FlockKeyListener.Key.Right;
+		case KeyEvent.VK_D:
+			return FlockKeyListener.Key.Debug;
 		case KeyEvent.VK_X:
 			return FlockKeyListener.Key.UseItem;
 		case KeyEvent.VK_Z:

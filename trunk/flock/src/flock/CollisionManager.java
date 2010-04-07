@@ -1,10 +1,16 @@
 package flock;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-public class CollisionManager 
+public class CollisionManager
 {
-	public Tile[] getEntityTiles(Entity e)
+	/**
+	 * Returns the rectangle of space where the entity can move,
+	 * based on its current coordinates.  This is a rough method,
+	 * and relies on being updated at every tick.
+	 */
+	public Rectangle2D.Double getSpace(Entity e)
 	{
 		final Tile[][] gameTiles = Game.instance().getTiles();
 		final int tH = Game.instance().config().tileHeight(),
@@ -12,107 +18,81 @@ public class CollisionManager
 		          tileRows = gameTiles.length,
 		          tileCols = gameTiles[0].length;
 		
-		// Get the coordinates of the tiles this entity is overlapping with.
-		// FIXME: assumes there are exactly four of them.
-		int[][] tc = new int[4][2];
-		tc[0][0] = (int)(e._y / tH);
-		tc[0][1] = (int)(e._x / tW);
-		tc[1][0] = tc[0][0];
-		tc[1][1] = (int)((e._x + e.width()) / tW);
-		tc[2][0] = (int)((e._y + e.height()) / tH);
-		tc[2][1] = tc[0][1];
-		tc[3][0] = tc[2][0];
-		tc[3][1] = tc[1][1];
+		// Get the rectangle of tiles this entity is overlapping with.
+		int minrow = Math.max(0, (int)(e._y / tH)),
+		    maxrow = Math.min(tileRows - 1, (int)((e._y + e.height()) / tH)),
+		    mincol = Math.max(0, (int)(e._x / tW)),
+		    maxcol = Math.min(tileCols - 1, (int)((e._x + e.width()) / tW));
+		//System.out.println("Entity " + e + " spans tile rows " +
+		//		minrow + "-" + maxrow + ", tile cols " + mincol + "-" + maxcol + ".");
 		
-		// Adjust coords in case entity is partly off-screen.
-		for(int i = 0; i < 4; i++)
-		{
-			tc[i][0] = Math.max(tc[i][0], 0);
-			tc[i][0] = Math.min(tc[i][0], tileRows - 1);
-			tc[i][1] = Math.max(tc[i][1], 0);
-			tc[i][1] = Math.min(tc[i][1], tileCols - 1);
-		}
-		System.out.println("Entity at " + e._x + " x " + e._y + " has tiles:");
-		System.out.println("       " + tc[0][0] + "x" + tc[0][1] + ", " +
-				                       tc[1][0] + "x" + tc[1][1] + ", " +
-				                       tc[2][0] + "x" + tc[2][1] + ", " +
-				                       tc[3][0] + "x" + tc[3][1] + ".");
+		// Look up, down, left, right on that rectangle and see how far the entity can go.
+		// TODO: this can be precalculated for each tile (performance).
+		Rectangle2D.Double ret = new Rectangle2D.Double();
+		boolean stop;
 		
-		Tile[] result = new Tile[4];
-		result[0] = gameTiles[tc[0][0]][tc[0][1]];
-		result[1] = gameTiles[tc[1][0]][tc[1][1]];
-		result[2] = gameTiles[tc[2][0]][tc[2][1]];
-		result[3] = gameTiles[tc[3][0]][tc[3][1]];
-		return result;
-	}
-	
-	public void correctWalls(Entity e)
-	{
-		Tile[] tiles = getEntityTiles(e);
-		
-		if ((tiles[2] instanceof WallTile || tiles[3] instanceof WallTile) && 
-				!(tiles[0] instanceof WallTile || tiles[1] instanceof WallTile))
+		// Look up.
+		stop = false;
+		for(int row = minrow - 1; row >= 0 && !stop; row--)
+			for(int col = mincol; col <= maxcol && !stop; col++)
+				if(gameTiles[row][col].isSolid())
+				{
+					ret.y = tH * (row + 1);
+					stop = true;
+				}
+		if(!stop)
 		{
-			e.setLowerWall(true);
-			
-		}
-		else if ((tiles[2] instanceof WallTile && tiles[3] instanceof WallTile))
-		{
-			e.setLowerWall(true);
-		}
-		else
-		{
-			e.setLowerWall(false);
-			if (e instanceof PlayerEntity)
-				((PlayerEntity)e).setJumping(true);
+			System.err.println("Entity " + e + ": No wall looking up.");
+			ret.y = 0;
 		}
 		
-		if ((tiles[1] instanceof WallTile || tiles[3] instanceof WallTile) && !e.againstLowerWall())
+		// Look down.
+		stop = false;
+		for(int row = maxrow + 1; row < tileRows && !stop; row++)
+			for(int col = mincol; col <= maxcol && !stop; col++)
+				if(gameTiles[row][col].isSolid())
+				{
+					ret.height = tH * row - ret.y;
+					stop = true;
+				}
+		if(!stop)
 		{
-			e.setRightWall(true);
-			e.setVelX(0);
-		}
-		else if ((tiles[1] instanceof WallTile && tiles[3] instanceof WallTile))
-		{
-			e.setRightWall(true);
-			e.setVelX(0);
-		}
-		else
-		{
-			e.setRightWall(false);
-		}
-		
-		if ((tiles[0] instanceof WallTile || tiles[2] instanceof WallTile) && !e.againstLowerWall())
-		{
-			e.setLeftWall(true);
-			e.setVelX(0);
-		}
-		else if ((tiles[0] instanceof WallTile && tiles[2] instanceof WallTile))
-		{
-			e.setLeftWall(true);
-			e.setVelX(0);
-		}
-		else
-		{
-			e.setLeftWall(false);
+			System.err.println("Entity " + e + ": No wall looking down.");
+			ret.height = tH * tileRows - ret.y;
 		}
 		
-		if ((tiles[0] instanceof WallTile || tiles[1] instanceof WallTile) && e.getVelY() < 0)
+		// Look left.
+		stop = false;
+		for(int col = mincol - 1; col >= 0 && !stop; col--)
+			for(int row = minrow; row <= maxrow && !stop; row++)
+				if(gameTiles[row][col].isSolid())
+				{
+					ret.x = tW * (col + 1);
+					stop = true;
+				}
+		if(!stop)
 		{
-			if (!(e.againstLeftWall() || e.againstRightWall()) || (e.againstLeftWall() && e.againstRightWall()))
-			{
-				e.setUpperWall(true);
-			}
-			if (!((tiles[0] instanceof WallTile && tiles[2] instanceof WallTile) ||
-					(tiles[1] instanceof WallTile && tiles[3] instanceof WallTile)))
-			{
-				e.setUpperWall(true);
-			}
+			System.err.println("Entity " + e + ": No wall looking left.");
+			ret.x = 0;
 		}
-		else
+		
+		// Look right.
+		stop = false;
+		for(int col = maxcol + 1; col < tileCols && !stop; col++)
+			for(int row = minrow; row <= maxrow && !stop; row++)
+				if(gameTiles[row][col].isSolid())
+				{
+					ret.width = tW * col - ret.x;
+					stop = true;
+				}
+		if(!stop)
 		{
-			e.setUpperWall(false);
+			System.err.println("Entity " + e + ": No wall looking right.");
+			ret.width = tW * tileCols - ret.x;
 		}
+		
+		//System.out.println("Entity " + e + " has space " + ret);
+		return ret;
 	}
 	
 	//kill lemmings if two lemmings of opposite alignment collide

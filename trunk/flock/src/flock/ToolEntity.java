@@ -14,7 +14,7 @@ abstract public class ToolEntity extends Entity
 	{
 		super(id, x, y);
 		_visible = true;
-		_accelY = 0;
+		//_accelY = 0;
 	}
 	
 	/// Draw only if not held by the user.
@@ -28,11 +28,13 @@ abstract public class ToolEntity extends Entity
 	public void pickUp()
 	{
 		_visible = false;
+		_paused = true; // to prevent collision updates
 	}
 	
 	public void drop()
 	{
 		_visible = true;
+		_paused = false;
 	}
 	
 	public void doUpdate()

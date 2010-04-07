@@ -1,6 +1,7 @@
 package flock;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -76,26 +77,15 @@ public class Game extends JFrame implements Runnable
 			switch(key)
 			{
 			case Left:
-				if (!_player.againstLeftWall())
-				{
-					_player.setVelX(-config().defaultPlayerMotionSpeed());
-				}
+				_player.setVelX(-config().defaultPlayerMotionSpeed());
 				_stopScheduled = false;
 				break;
 			case Right:
-				if (!_player.againstRightWall())
-				{
-					_player.setVelX(config().defaultPlayerMotionSpeed());
-				}
+				_player.setVelX(config().defaultPlayerMotionSpeed());
 				_stopScheduled = false;
 				break;
 			case Jump:
-				// remove the !_player.jumping() term to allow double-jumping
-				if (!_player.againstUpperWall() && !_player.isJumping())
-				{
-					_player.setJumping(true);
-					_player.setVelY(-config().defaultPlayerJumpSpeed());
-				}
+				_player.tryJump();
 				break;
 			case TimeFreeze:
 				setTimeFreeze(!_timeFreeze);
@@ -109,6 +99,10 @@ public class Game extends JFrame implements Runnable
 				break;
 			case UseItem:
 				_player.useTool();
+				break;
+			case Debug:
+				if(_config.isDebugEnabled())
+					_debugPressed = true;
 				break;
 			}
 		}
@@ -158,6 +152,9 @@ public class Game extends JFrame implements Runnable
 	private PlayerEntity _player;
 	private DoorEntity _door;
 	private boolean _timeFreeze;
+	private boolean _paused;
+	/// If in debug mode, wait for a key press before doing an update.
+	private boolean _debugPressed = false;
 	
 	private Game()
 	{
@@ -211,6 +208,7 @@ public class Game extends JFrame implements Runnable
 		_tiles = level.tiles();
 		_entities = level.entities();
 		setTimeFreeze(true);
+		setPaused(false);
 		
 		// Find the player and all ToolEntities.
 		_player = null;
@@ -233,6 +231,7 @@ public class Game extends JFrame implements Runnable
 			System.err.println("Level " + level.id() + " has no player!");
 			System.exit(1);
 		}
+		_player.setFrozen(false);
 	}
 	
 	private ToolEntity findNearestTool()
@@ -303,9 +302,28 @@ public class Game extends JFrame implements Runnable
 						continue;
 					}
 					g.clearRect(0, 0, getWidth(), getHeight());
+					
+					// The tiles.
 					for(int r = 0; r < _currentLevel.rows(); r++)
 						for(int c = 0; c < _currentLevel.cols(); c++)
 							_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
+					
+					// Grid, if in debug mode.
+					if(_config.isDebugEnabled())
+					{
+						final int tW = _config.tileWidth(),
+						          tH = _config.tileHeight(),
+						          tR = _currentLevel.rows(),
+						          tC = _currentLevel.cols();
+						
+						g.setColor(Color.CYAN);
+						for(int r = 0; r < tR; r++)
+							g.drawLine(0, (r + 1) * tH, tC * tW, (r + 1) * tH);
+						for(int c = 0; c < tC; c++)
+							g.drawLine((c + 1) * tW, 0, (c + 1) * tW, tR * tH);
+					}
+					
+					// The entities.
 					for(Entity ent: _entities)
 						ent.draw(g);
 					
@@ -344,12 +362,19 @@ public class Game extends JFrame implements Runnable
 		{
 			fps.sleep();
 			//System.out.println("gameLoop");
+			
+			// If in debug mode, pause everything until Debug is pressed.
+			if(_config.isDebugEnabled())
+				setPaused(!_debugPressed);
+			
+			// Update everything.
+			// Note: it is the Entity's job to skip the update if paused.
+			_debugPressed = false;
 			for(Entity ent: _entities)
 			{
 				ent.update();
-				_colman.correctWalls(ent);
 			}
-			_colman.correctLemmings();
+			_colman.correctLemmings(); // FIXME should be done in LemmingEntity.update()
 			doKillList();
 			
 			_keyman.update();
@@ -429,6 +454,12 @@ public class Game extends JFrame implements Runnable
 		return _levelman;
 	}
 	
+	/// Returns the unique CollisionManager of this game.
+	public CollisionManager collisionManager()
+	{
+		return _colman;
+	}
+	
 	public Tile[][] getTiles()
 	{
 		return _tiles;
@@ -452,6 +483,16 @@ public class Game extends JFrame implements Runnable
 			if(!(ent instanceof PlayerEntity))
 				ent.setFrozen(freeze);
 		}
+	}
+	
+	public void setPaused(boolean paused)
+	{
+		if(paused == _paused)
+			return;
+		
+		_paused = paused;
+		for(Entity ent : _entities)
+			ent.setPaused(paused);
 	}
 	
 	/// main app.
