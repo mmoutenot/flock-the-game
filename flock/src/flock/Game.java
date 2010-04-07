@@ -90,6 +90,9 @@ public class Game extends JFrame implements Runnable
 			case TimeFreeze:
 				setTimeFreeze(!_timeFreeze);
 				break;
+			case Pause:
+				setPaused(!_paused);
+				break;
 			case PickUpItem:
 			{
 				ToolEntity pick = (ToolEntity)findNearestEntity(ToolEntity.class);
@@ -160,7 +163,7 @@ public class Game extends JFrame implements Runnable
 	private PlayerEntity _player;
 	private DoorEntity _door;
 	private boolean _timeFreeze;
-	private boolean _paused;
+	private boolean _paused = false;;
 	/// If in debug mode, wait for a key press before doing an update.
 	private boolean _debugPressed = false;
 	
@@ -494,12 +497,20 @@ public class Game extends JFrame implements Runnable
 	
 	public void setPaused(boolean paused)
 	{
-		if(paused == _paused)
-			return;
-		
 		_paused = paused;
 		for(Entity ent : _entities)
+		{
 			ent.setPaused(paused);
+		}
+		if(paused){
+			System.out.println("Paused!");
+			/*///Trying to put some sort of overlay text. Having trouble initializing g
+			BufferStrategy strategy = _canvas.getBufferStrategy();
+			Graphics2D g = Graphics2D();
+			g.setColor(Color.black);
+			g.drawString("PAUSED", 50, 50);
+			*/
+		}
 	}
 	
 	/// main app.
