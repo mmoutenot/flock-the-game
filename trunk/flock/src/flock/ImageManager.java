@@ -28,10 +28,10 @@ public class ImageManager
 		BufferedImage img;
 		try
 		{
-			System.out.println("img name " + id);
+			//System.out.println("img name " + id);
 			URL url = Game.instance().getClass().getClassLoader().getResource("flockimg/" + id + ".png");
 			// TODO document "flockimg/" and figure out where best to put images.
-			System.out.println("URL = " + url);
+			//System.out.println("URL = " + url);
 			img = ImageIO.read(url);
 		}
 		catch (Exception e)

@@ -96,7 +96,7 @@ abstract public class Level
 		// Read header
 		while((line = reader.readLine()) != null)
 		{
-			System.out.println(line);
+			//System.out.println(line);
 			
 			if(line.startsWith(";"))
 				continue;
@@ -135,7 +135,7 @@ abstract public class Level
 			while(true)
 			{
 				line = reader.readLine();
-				System.out.println(line);
+				//System.out.println(line);
 				
 				if(line == null)
 					throw new Exception("Level " + _id + ": expected " + _rows +
