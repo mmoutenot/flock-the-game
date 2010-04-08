@@ -19,6 +19,7 @@ abstract public class Level
 	private String _id;
 	private String _nextId;
 	private String _title;
+	private String _password;
 	private int _rows, _cols;
 	protected Tile[][] _tiles;
 	protected ArrayList<Entity> _entities;
@@ -45,6 +46,11 @@ abstract public class Level
 	public String title()
 	{
 		return _title;
+	}
+	
+	public String password()
+	{
+		return _password;
 	}
 	
 	public int rows()
@@ -105,6 +111,8 @@ abstract public class Level
 				_cols = Integer.parseInt(stuff[1]);
 			else if(stuff[0].equals("title"))
 				_title = stuff[1];
+			else if(stuff[0].equals("password"))
+				_password = stuff[1];
 			else if(stuff[0].equals("next"))
 				_nextId = stuff[1];
 		}
@@ -114,6 +122,8 @@ abstract public class Level
 			throw new Exception("Level " + _id + ": missing cols=");
 		if(_title == null)
 			throw new Exception("Level " + _id + ": missing title=");
+		if(_password == null)
+			throw new Exception("Level " + _id + ": missing password=");
 		
 		// Read level content.
 		if(!line.equals("begin"))

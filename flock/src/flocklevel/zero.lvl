@@ -2,6 +2,7 @@ rows=20
 columns=26
 ; comment
 title=Welcome
+password=zerro
 ;
 begin
 ##########################
