@@ -1,5 +1,10 @@
 package flock;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,6 +21,66 @@ import java.util.ArrayList;
  */
 abstract public class Level
 {
+	/**
+	 * A basic Overlay for the level, showing its title
+	 * and password.
+	 */
+	protected class SimpleOverlay extends Overlay
+	{
+		private Level _level;
+		
+		public SimpleOverlay(BufferedImage background, Level level)
+		{
+			super(background);
+			_level = level;
+		}
+		
+		public void keyPressed(KeyEvent e)
+		{
+			Game.instance().setPaused(false, null);
+		}
+
+		@Override
+		protected void doDraw(Graphics2D g)
+		{
+			final int W = Game.instance().getWidth();
+
+			// Some text.
+			// FIXME a lot of this menu stuff could be factored out in a MenuOverlay...
+			final int messages = 5;
+			final String[] message = {
+					"Level Title:",
+			        _level._title,
+			        "Level password:",
+			        _level._password,
+			        "Press any key to continue..."
+			};
+			final int[] yposition = {
+					100,
+					140,
+					200,
+					240,
+					300
+			};
+			final Color[] color = {
+					Color.CYAN,
+					Color.GREEN,
+					Color.CYAN,
+					Color.RED,
+					Color.GREEN
+			};
+			Font font = new Font("Default", Font.PLAIN, 24); // TODO pick nicer font 
+			g.setFont(font);
+			for(int i = 0; i < messages; i++)
+			{
+				g.setColor(color[i]);
+				g.drawString(message[i],
+						(W - g.getFontMetrics().stringWidth(message[i])) / 2,
+						yposition[i]);
+			}
+		}
+	}
+	
 	private String _id;
 	private String _nextId;
 	private String _title;
@@ -162,5 +227,14 @@ abstract public class Level
 		line = reader.readLine();
 		if(!line.equals("end"))
 			throw new Exception("Level " + _id + ": extra lines or missing end.");
+	}
+	
+	/**
+	 * Returns an overlay to use as intro to this level.
+	 * Override if you want something fancier than SimpleOverlay.
+	 */
+	public Overlay getOverlay(BufferedImage background)
+	{
+		return new SimpleOverlay(background, this);
 	}
 }
