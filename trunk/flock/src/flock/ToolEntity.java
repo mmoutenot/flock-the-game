@@ -28,13 +28,13 @@ abstract public class ToolEntity extends Entity
 	public void pickUp()
 	{
 		_visible = false;
-		_paused = true; // to prevent collision updates
+		_active = false; // to prevent collision updates
 	}
 	
 	public void drop()
 	{
 		_visible = true;
-		_paused = false;
+		_active = true;
 	}
 	
 	public void doUpdate()

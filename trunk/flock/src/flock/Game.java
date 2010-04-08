@@ -160,7 +160,6 @@ public class Game extends JFrame implements Runnable
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private ArrayList<LemmingEntity> _lemmingEntities;
-	private ArrayList<Entity> _killList;
 	private PlayerEntity _player;
 	private ArrayList<DoorEntity> _doors;
 	private boolean _timeFreeze;
@@ -237,7 +236,6 @@ public class Game extends JFrame implements Runnable
 		// Find the player and all ToolEntities.
 		_player = null;
 		_lemmingEntities = new ArrayList<LemmingEntity>();
-		_killList = new ArrayList<Entity>();
 		_doors = new ArrayList<DoorEntity>();
 		
 		for(Entity ent: _entities)
@@ -263,8 +261,7 @@ public class Game extends JFrame implements Runnable
 		return _currentLevel;
 	}
 	
-	/// Returns the nearest non-paused entity of type @p type.
-	// TODO document that !paused really means enabled...
+	/// Returns the nearest active entity of type @p type.
 	private Entity findNearestEntity(Class<?> type)
 	{
 		double min = Double.POSITIVE_INFINITY;
@@ -272,7 +269,7 @@ public class Game extends JFrame implements Runnable
 		
 		for(Entity ent: _entities)
 		{
-			if(ent.isPaused() || !type.isInstance(ent))
+			if(!ent.isActive() || !type.isInstance(ent))
 				continue;
 			final double dist = _player.distance(ent);
 			//System.out.println("Considering " + ent + " at dist " + dist);
@@ -431,30 +428,8 @@ public class Game extends JFrame implements Runnable
 			{
 				ent.update();
 			}
-			_colman.correctLemmings(); // FIXME should be done in LemmingEntity.update()
-			doKillList();
-			
+			_colman.notifyCollisions();
 			_keyman.update();
-		}
-	}
-	
-	//slates ent for removal at the end of the tick
-	public void kill(Entity ent)
-	{
-		_killList.add(ent);
-	}
-	
-	//removes all entities that died in the previous tick
-	public void doKillList()
-	{
-		for (Entity ent : _killList)
-		{
-			_entities.remove(ent);
-			if (ent instanceof LemmingEntity)
-			{
-				_lemmingEntities.remove(ent);
-			}
-			ent.die();
 		}
 	}
 	
@@ -520,6 +495,11 @@ public class Game extends JFrame implements Runnable
 	public Tile[][] getTiles()
 	{
 		return _tiles;
+	}
+	
+	public ArrayList<Entity> entities()
+	{
+		return _entities;
 	}
 	
 	public ArrayList<LemmingEntity> getLemmings()

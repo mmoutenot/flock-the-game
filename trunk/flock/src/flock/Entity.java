@@ -28,7 +28,10 @@ abstract public class Entity extends Tile
 	protected double _accelY;
 	protected boolean _frozen;
 	protected boolean _paused;
-	protected boolean _dead;
+	/// The Entity only updates if it's active. A dead Lemming is inactive, for instance.
+	protected boolean _active;
+	/// Defines whether or not the entity cares about collisions. False by default.
+	protected boolean _collide;
 	private boolean _debug;
 	
 	/// defines the space around the entity where it can move (i.e. bounded by walls)
@@ -58,7 +61,8 @@ abstract public class Entity extends Tile
 		_accelY = Game.instance().config().defaultGravity();
 		_frozen = true;
 		_paused = false;
-		_dead = false; // FIXME move to LemmingEntity
+		_active = true;
+		_collide = false;
 		_debug = false;
 		_space = new Rectangle2D.Double();
 		update();
@@ -151,6 +155,16 @@ abstract public class Entity extends Tile
 		return _paused;
 	}
 	
+	public boolean isActive()
+	{
+		return _active;
+	}
+	
+	public boolean caresAboutCollisions()
+	{
+		return _collide;
+	}
+	
 	/// since _lastTime;
 	public long elapsedTime()
 	{
@@ -181,7 +195,7 @@ abstract public class Entity extends Tile
 	 */
 	public void update()
 	{
-		if (_dead)
+		if(!_active)
 			return;
 		
 		final long ms = elapsedTime();
@@ -229,7 +243,12 @@ abstract public class Entity extends Tile
 	}
 	
 	/// subclasses must override / define.
-	abstract public void doUpdate(long msElapsed);
+	abstract protected void doUpdate(long msElapsed);
+	
+	/// does nothing in base class.
+	protected void collided(Entity other)
+	{
+	}
 	
 	/// override if you want to do something other than draw an image.
 	public void draw(Graphics2D g)
@@ -251,11 +270,5 @@ abstract public class Entity extends Tile
 	public boolean intersects(Entity other)
 	{
 		return _rect.intersects(other.getRect());
-	}
-	
-	public void die()
-	{
-		_dead = true;
-		_image = null;
 	}
 }

@@ -7,4 +7,14 @@ public class AntiLemmingEntity extends LemmingEntity
 	{
 		super("antilemming", x, y);
 	}
+	
+	@Override
+	protected void collided(Entity other)
+	{
+		if(other instanceof LemmingEntity)
+		{
+			kill();
+			((LemmingEntity)other).kill();
+		}
+	}
 }

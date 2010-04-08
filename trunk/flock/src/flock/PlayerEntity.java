@@ -11,6 +11,7 @@ public class PlayerEntity extends Entity
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
+		_collide = true;
 	}
 
 	public void doUpdate(long msElapsed)

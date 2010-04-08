@@ -95,38 +95,26 @@ public class CollisionManager
 		return ret;
 	}
 	
-	//kill lemmings if two lemmings of opposite alignment collide
-	public void correctLemmings()
+	/**
+	 * Notify those entities that care about collisions if they
+	 * collided with anything.
+	 */
+	public void notifyCollisions()
 	{
-		ArrayList<LemmingEntity> lemmings = Game.instance().getLemmings();
-		ArrayList<DoorEntity> doors = Game.instance().getDoors();
+		// TODO performance can be precalculating most of this...
+		ArrayList<Entity> colliders = new ArrayList<Entity>();
+		for(Entity e: Game.instance().entities())
+			if(e.caresAboutCollisions())
+				colliders.add(e);
 		
-		for (LemmingEntity lemming: lemmings)
-		{
-			if (!(lemming instanceof AntiLemmingEntity))
-			{
-				for (LemmingEntity anti : lemmings)
+		// Careful here not to send duplicate collided() messages.
+		final int count = colliders.size();
+		for(int a = 0; a < count; a++)
+			for(int b = a + 1; b < count; b++)
+				if(colliders.get(a).intersects(colliders.get(b)))
 				{
-					if (anti instanceof AntiLemmingEntity)
-					{
-						if (anti.intersects(lemming))
-						{
-							//System.out.println("They should have died");
-							Game.instance().kill(anti);
-							Game.instance().kill(lemming);
-						}
-					}
+					colliders.get(a).collided(colliders.get(b));
+					colliders.get(b).collided(colliders.get(a));
 				}
-				
-				for (DoorEntity door : doors)
-				{
-					if (lemming.intersects(door))
-					{
-						Game.instance().kill(lemming);
-						door.enterLemming();
-					}
-				}
-			}
-		}
 	}
 }

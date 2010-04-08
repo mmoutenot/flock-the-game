@@ -20,6 +20,7 @@ public class LemmingEntity extends Entity
 	private void init()
 	{
 		_velX = Game.instance().config().defaultLemmingVelocity();
+		_collide = true;
 	}
 
 	/// Toggle direction of lemming when it hits something solid.
@@ -28,5 +29,13 @@ public class LemmingEntity extends Entity
 	{
 		if(_x - _space.x < 2 || _space.x + _space.width - _x < 2)
 			setVelX(-_velX);
+	}
+	
+	public void kill()
+	{
+		_active = false;
+		_image = null;
+		_velX = _velY = _accelX = _accelY = 0;
+		_collide = false;
 	}
 }
