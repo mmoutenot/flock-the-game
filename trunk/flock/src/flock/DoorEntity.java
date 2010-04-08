@@ -1,18 +1,25 @@
 package flock;
 
-public class DoorEntity extends Entity
+public class DoorEntity extends ActionEntity
 {
 	private int _lemmingsThrough;
-	public DoorEntity(double x, double y) 
+	private int _lemmingsRequired;
+	private int _nextLevel; //having this in the door class allows us to have multiple doors in the same room
+	
+	public DoorEntity(double x, double y, int lemmings, int next) 
 	{
 		super("door", x, y);
 		_lemmingsThrough = 0;
+		_lemmingsRequired = lemmings;
+		_nextLevel = next;
 	}
 	
-	public DoorEntity(String id, double x, double y)
+	public DoorEntity(String id, double x, double y, int lemmings, int next)
 	{
 		super(id, x, y);
 		_lemmingsThrough = 0;
+		_lemmingsRequired = lemmings;
+		_nextLevel = next;
 	}
 	
 	public void init()
@@ -33,6 +40,14 @@ public class DoorEntity extends Entity
 	public void doUpdate(long msElapsed) 
 	{
 		;
+	}
+
+	public void action() 
+	{
+		if (_lemmingsThrough >= _lemmingsRequired)
+		{
+			Game.instance().goToLevel(_nextLevel);
+		}
 	}
 
 }

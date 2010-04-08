@@ -157,12 +157,13 @@ public class Game extends JFrame implements Runnable
 	private Thread _animator;
 	private double _actualFps;
 	private Level _currentLevel = null;
+	private static ArrayList<Level> _levels;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private ArrayList<LemmingEntity> _lemmingEntities;
 	private ArrayList<Entity> _killList;
 	private PlayerEntity _player;
-	private DoorEntity _door;
+	private ArrayList<DoorEntity> _doors;
 	private boolean _timeFreeze;
 	private boolean _paused = false;
 	private Overlay _pauseOverlay = null;
@@ -184,6 +185,20 @@ public class Game extends JFrame implements Runnable
 		_imageman = new ImageManager();
 		_levelman = new LevelManager();
 		_colman = new CollisionManager();
+		
+		//Levels are kept in this list and should be referenced by their index from here on
+		_levels = new ArrayList<Level>();
+		
+		try 
+		{
+			_levels.add(new LevelZero());
+			_levels.add(new LevelDemo());
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
 		
 		if(!testing)
 		{
@@ -227,6 +242,8 @@ public class Game extends JFrame implements Runnable
 		_player = null;
 		_lemmingEntities = new ArrayList<LemmingEntity>();
 		_killList = new ArrayList<Entity>();
+		_doors = new ArrayList<DoorEntity>();
+		
 		for(Entity ent: _entities)
 		{
 			if(ent instanceof PlayerEntity)
@@ -234,7 +251,7 @@ public class Game extends JFrame implements Runnable
 			else if (ent instanceof LemmingEntity)
 				_lemmingEntities.add((LemmingEntity)ent);
 			else if (ent instanceof DoorEntity)
-				_door = (DoorEntity)ent;
+				_doors.add((DoorEntity)ent);
 		}
 		if(_player == null)
 		{
@@ -514,9 +531,9 @@ public class Game extends JFrame implements Runnable
 		return _lemmingEntities;
 	}
 	
-	public DoorEntity getDoor()
+	public ArrayList<DoorEntity> getDoors()
 	{
-		return _door;
+		return _doors;
 	}
 	
 	public void setTimeFreeze(boolean freeze)
@@ -554,6 +571,11 @@ public class Game extends JFrame implements Runnable
 			_pauseOverlay = null;
 			addKeyListener(_keyman);
 		}
+	}
+	
+	public void goToLevel(int id)
+	{
+		loadLevel(_levels.get(id));
 	}
 	
 	/// main app.

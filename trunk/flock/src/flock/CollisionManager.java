@@ -99,6 +99,8 @@ public class CollisionManager
 	public void correctLemmings()
 	{
 		ArrayList<LemmingEntity> lemmings = Game.instance().getLemmings();
+		ArrayList<DoorEntity> doors = Game.instance().getDoors();
+		
 		for (LemmingEntity lemming: lemmings)
 		{
 			if (!(lemming instanceof AntiLemmingEntity))
@@ -115,10 +117,14 @@ public class CollisionManager
 						}
 					}
 				}
-				if (lemming.intersects(Game.instance().getDoor()))
+				
+				for (DoorEntity door : doors)
 				{
-					Game.instance().kill(lemming);
-					Game.instance().getDoor().enterLemming();
+					if (lemming.intersects(door))
+					{
+						Game.instance().kill(lemming);
+						door.enterLemming();
+					}
 				}
 			}
 		}
