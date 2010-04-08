@@ -12,7 +12,7 @@ public class LevelDemo extends Level
 		_entities.add(new LemmingEntity(130, 100));
 		//_entities.add(new AntiLemmingEntity(50, 100));
 		_entities.add(new WrenchEntity(250, 50));
-		_entities.add(new DoorEntity(100, 224, 1, 0));
+		_entities.add(new DoorEntity(100, 224, 1, "zero"));
 		
 		// Player should be added last, so it draws on top of everything else.
 		_entities.add(new PlayerEntity(100, 100));
