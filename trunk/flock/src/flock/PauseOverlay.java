@@ -57,8 +57,7 @@ public class PauseOverlay extends Overlay
 	@Override
 	protected void doDraw(Graphics2D g)
 	{
-		final int W = Game.instance().getWidth(),
-                  H = Game.instance().getHeight();
+		final int W = Game.instance().getWidth();
 		final String paused = "PAUSED";
 		int starty = 100;
 		

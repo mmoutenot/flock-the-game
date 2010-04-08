@@ -399,7 +399,8 @@ public class Game extends JFrame implements Runnable
 			ent.draw(g);
 	}
 	
-	private BufferedImage getImageForOverlay()
+	/// Takes a screenshot of the game.  Used by Overlays.
+	public BufferedImage getImageForOverlay()
 	{
 		BufferedImage image = new BufferedImage(getWidth(),
 				getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
