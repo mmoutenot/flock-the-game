@@ -3,12 +3,12 @@ package flock;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
@@ -92,7 +92,7 @@ public class Game extends JFrame implements Runnable
 				setTimeFreeze(!_timeFreeze);
 				break;
 			case Pause:
-				setPaused(!_paused);
+				setPaused(!_paused, null);
 				break;
 			case PickUpItem:
 			{
@@ -164,8 +164,8 @@ public class Game extends JFrame implements Runnable
 	private PlayerEntity _player;
 	private DoorEntity _door;
 	private boolean _timeFreeze;
-	private boolean _paused = false;;
-	private boolean _drawPaused = false;
+	private boolean _paused = false;
+	private Overlay _pauseOverlay = null;
 	/// If in debug mode, wait for a key press before doing an update.
 	private boolean _debugPressed = false;
 	
@@ -188,7 +188,7 @@ public class Game extends JFrame implements Runnable
 		if(!testing)
 		{
 			_canvas = new Canvas();
-			_canvas.setPreferredSize(new Dimension(800,600));
+			_canvas.setPreferredSize(new Dimension(780,600));
 			add(_canvas);
 			pack();
 			setResizable(false);
@@ -215,13 +215,13 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
-	private void loadLevel(Level level)
+	public void loadLevel(Level level)
 	{
 		_currentLevel = level;
 		_tiles = level.tiles();
 		_entities = level.entities();
 		setTimeFreeze(true);
-		setPaused(false);
+		setPaused(false, null);
 		
 		// Find the player and all ToolEntities.
 		_player = null;
@@ -244,9 +244,15 @@ public class Game extends JFrame implements Runnable
 		_player.setFrozen(false);
 	}
 	
+	/// Returns the current level.
+	public Level currentLevel()
+	{
+		return _currentLevel;
+	}
+	
 	/// Returns the nearest non-paused entity of type @p type.
 	// TODO document that !paused really means enabled...
-	private Entity findNearestEntity(Class type)
+	private Entity findNearestEntity(Class<?> type)
 	{
 		double min = Double.POSITIVE_INFINITY;
 		Entity pick = null;
@@ -305,43 +311,25 @@ public class Game extends JFrame implements Runnable
 					// Get a new graphics context every time through the loop
 					// to make sure the strategy is validated
 					Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-					//Graphics2D g = (Graphics2D) getContentPane().getGraphics();
 					
 					// Render
-					if(g == null || _currentLevel == null)
+					if(!_paused)
 					{
-						System.out.println("Animator thread skipping a beat -- no graphics or level yet.");
-						continue;
+						if(g == null || _currentLevel == null)
+						{
+							System.out.println("Animator thread skipping a beat -- no graphics or level yet.");
+							continue;
+						}
+						draw(g);
 					}
-					g.clearRect(0, 0, getWidth(), getHeight());
-					
-					// The tiles.
-					for(int r = 0; r < _currentLevel.rows(); r++)
-						for(int c = 0; c < _currentLevel.cols(); c++)
-							_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
-					
-					// Grid, if in debug mode.
-					if(_config.isDebugEnabled())
+					else
 					{
-						final int tW = _config.tileWidth(),
-						          tH = _config.tileHeight(),
-						          tR = _currentLevel.rows(),
-						          tC = _currentLevel.cols();
-						
-						g.setColor(Color.CYAN);
-						for(int r = 0; r < tR; r++)
-							g.drawLine(0, (r + 1) * tH, tC * tW, (r + 1) * tH);
-						for(int c = 0; c < tC; c++)
-							g.drawLine((c + 1) * tW, 0, (c + 1) * tW, tR * tH);
-					}
-					
-					// The entities.
-					for(Entity ent: _entities)
-						ent.draw(g);
-					
-					if(!_drawPaused){
-						g.setColor(Color.black);
-						g.drawString("PAUSED", 250, 250);
+						if(g == null || _pauseOverlay == null)
+						{
+							System.out.println("Animator thread skipping a beat -- no graphics or pause overlay yet.");
+							continue;
+						}
+						_pauseOverlay.draw(g);
 					}
 					
 					// Dispose the graphics
@@ -367,6 +355,45 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
+	/// Draws game onto graphics object @p g.
+	private void draw(Graphics2D g)
+	{
+		g.setBackground(new Color(230, 230, 230));
+		g.clearRect(0, 0, getWidth(), getHeight());
+		
+		// The tiles.
+		for(int r = 0; r < _currentLevel.rows(); r++)
+			for(int c = 0; c < _currentLevel.cols(); c++)
+				_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());
+		
+		// Grid, if in debug mode.
+		if(_config.isDebugEnabled())
+		{
+			final int tW = _config.tileWidth(),
+			          tH = _config.tileHeight(),
+			          tR = _currentLevel.rows(),
+			          tC = _currentLevel.cols();
+			
+			g.setColor(Color.CYAN);
+			for(int r = 0; r < tR; r++)
+				g.drawLine(0, (r + 1) * tH, tC * tW, (r + 1) * tH);
+			for(int c = 0; c < tC; c++)
+				g.drawLine((c + 1) * tW, 0, (c + 1) * tW, tR * tH);
+		}
+		
+		// The entities.
+		for(Entity ent: _entities)
+			ent.draw(g);
+	}
+	
+	private BufferedImage getImageForOverlay()
+	{
+		BufferedImage image = new BufferedImage(getWidth(),
+				getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		draw(image.createGraphics());
+		return image;
+	}
+	
 	/// Main loop for the game/logic thread.
 	public void gameLoop()
 	{
@@ -382,7 +409,7 @@ public class Game extends JFrame implements Runnable
 			
 			// If in debug mode, pause everything until Debug is pressed.
 			if(_config.isDebugEnabled())
-				setPaused(!_debugPressed);
+				setPaused(!_debugPressed, null);
 			
 			// Update everything.
 			// Note: it is the Entity's job to skip the update if paused.
@@ -502,17 +529,30 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
-	public void setPaused(boolean paused)
-	{
+	public void setPaused(boolean paused, Overlay overlay)
+	{	
+		if(_paused == paused)
+			return;
+		
 		_paused = paused;
-		_drawPaused = !_drawPaused;
 		for(Entity ent : _entities)
 		{
 			ent.setPaused(paused);
 		}
-		if(paused){
-			System.out.println("Paused!");
-			
+		
+		if(paused)
+		{
+			if(overlay == null)
+				overlay = new PauseOverlay(getImageForOverlay());
+			_pauseOverlay = overlay;
+			removeKeyListener(_keyman);
+			addKeyListener(_pauseOverlay);
+		}
+		else
+		{
+			removeKeyListener(_pauseOverlay);
+			_pauseOverlay = null;
+			addKeyListener(_keyman);
 		}
 	}
 	

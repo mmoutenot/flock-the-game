@@ -127,6 +127,7 @@ public class Config
 		case KeyEvent.VK_Z:
 			return FlockKeyListener.Key.TimeFreeze;
 		case KeyEvent.VK_P:
+		case KeyEvent.VK_ESCAPE:
 			return FlockKeyListener.Key.Pause;
 		case KeyEvent.VK_SPACE:
 			return FlockKeyListener.Key.Action;
