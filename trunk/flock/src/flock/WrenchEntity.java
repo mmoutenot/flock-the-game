@@ -27,26 +27,26 @@ public class WrenchEntity extends ToolEntity
 		int x = (int)_x;
 		int y = (int)_y;
 		
-		while (!tiles[x / tileWidth][y / tileHeight].isSolid())
+		//Go downward until we hit solid ground
+		while (!tiles[y / tileHeight][x / tileWidth].isSolid())
 		{
-			System.out.println("x = " + x / tileWidth + ", y = " + y / tileHeight);
 			y += tileHeight;
 		}
 		
-		System.out.println("x = " + x / tileWidth + ", y = " + y / tileHeight);
-		
-		while (tiles[x / tileWidth][y / tileHeight].isSolid())
+		//Go right until we either go off the map or we hit empty space where the bridge can be built
+		while ((x / tileWidth) < tiles[0].length && tiles[y / tileHeight][x / tileWidth].isSolid())
 		{
 			x += tileWidth;
-			//System.out.println("x = " + x / tileWidth + ", y = " + y / tileHeight + " " + tiles[x / tileWidth][y / tileHeight].isSolid());
 		}
 		
-		System.out.println("x = " + x + ", y = " + y);
-		
-		while (!tiles[x / tileWidth][y / tileHeight].isSolid())
+		//Build the bridge rightward until it hits solid ground.
+		//Note: We might want to make it possible to build bridges leftwards too
+		while ((x / tileWidth) < tiles[0].length && !tiles[y / tileHeight][x / tileWidth].isSolid())
 		{
-			tiles[x / tileWidth][y / tileHeight] = new BridgeTile(x - (x % tileWidth), y - (y % tileHeight));
+			tiles[y / tileHeight][x / tileWidth] = new BridgeTile(x - (x % tileWidth), y - (y % tileHeight));
 			x += tileWidth; 
 		}
+		
+		//Make it one-use?
 	}
 }
