@@ -46,8 +46,8 @@ public class TerminalEntity extends ActionEntity
 				}
 				else
 				{
+					game.setPaused(false, null); // HACK to show Level's own overlay
 					game.loadLevel(level);
-					game.setPaused(false, null);
 				}
 				break;
 			}
