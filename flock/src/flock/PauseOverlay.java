@@ -91,12 +91,12 @@ public class PauseOverlay extends Overlay
 			game.setPaused(false, null);
 			break;
 		case RestartLevel:
+			game.setPaused(false, null); // HACK to show Level's own overlay
 			game.loadLevel(game.levelManager().level(game.currentLevel()));
-			game.setPaused(false, null);
 			break;
 		case GoToLevel0:
+			game.setPaused(false, null); // HACK to show Level's own overlay
 			game.loadLevel(game.levelManager().defaultLevel());
-			game.setPaused(false, null);
 			break;
 		case QuitGame:
 			System.exit(0); // not very elegant...
