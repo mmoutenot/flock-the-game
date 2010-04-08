@@ -39,8 +39,15 @@ public class LevelManager
 		return _defaultLevel;
 	}
 	
+	/// Returns level with id @p id.
 	public Level level(String id)
 	{
 		return _levels.get(id);
+	}
+	
+	/// Returns pristine copy of this level.
+	public Level level(Level level)
+	{
+		return _levels.get(level.id());
 	}
 }
