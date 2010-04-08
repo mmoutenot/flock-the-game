@@ -1,5 +1,6 @@
 package flock;
 
+/// A door through which LemmingEntities can go through.
 public class DoorEntity extends ActionEntity
 {
 	private int _lemmingsThrough;
@@ -12,36 +13,34 @@ public class DoorEntity extends ActionEntity
 		_lemmingsThrough = 0;
 		_lemmingsRequired = lemmings;
 		_nextLevel = next;
-	}
-	
-	public DoorEntity(String id, double x, double y, int lemmings, String next)
-	{
-		super(id, x, y);
-		_lemmingsThrough = 0;
-		_lemmingsRequired = lemmings;
-		_nextLevel = next;
-	}
-	
-	public void init()
-	{
+		
+		_collide = true;
 		//doors don't move
 		_velX = 0;
 		_velY = 0;
 		_accelX = 0;
 		_accelY = 0;
 	}
-	
-	public void enterLemming()
-	{
-		_lemmingsThrough++;
-		System.out.println("Number of lemmings in door: " + _lemmingsThrough);
-	}
 
+	@Override
 	public void doUpdate(long msElapsed) 
 	{
 		;
 	}
-
+	
+	@Override
+	protected void collided(Entity other)
+	{
+		if(other instanceof LemmingEntity &&
+		   !(other instanceof AntiLemmingEntity)) // HACK
+		{
+			((LemmingEntity)other).kill();
+			_lemmingsThrough++;
+			System.out.println("Number of lemmings in door: " + _lemmingsThrough);
+		}
+	}
+	
+	@Override
 	public void action() 
 	{
 		if (_lemmingsThrough >= _lemmingsRequired)
@@ -49,5 +48,4 @@ public class DoorEntity extends ActionEntity
 			Game.instance().goToLevel(_nextLevel);
 		}
 	}
-
 }
