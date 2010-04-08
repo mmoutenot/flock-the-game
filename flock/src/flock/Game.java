@@ -157,7 +157,6 @@ public class Game extends JFrame implements Runnable
 	private Thread _animator;
 	private double _actualFps;
 	private Level _currentLevel = null;
-	private static ArrayList<Level> _levels;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
 	private ArrayList<LemmingEntity> _lemmingEntities;
@@ -186,13 +185,10 @@ public class Game extends JFrame implements Runnable
 		_levelman = new LevelManager();
 		_colman = new CollisionManager();
 		
-		//Levels are kept in this list and should be referenced by their index from here on
-		_levels = new ArrayList<Level>();
-		
 		try 
 		{
-			_levels.add(new LevelZero());
-			_levels.add(new LevelDemo());
+			_levelman.addLevel(new LevelZero());
+			_levelman.addLevel(new LevelDemo());
 		} 
 		catch (Exception e) 
 		{
@@ -573,9 +569,9 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
-	public void goToLevel(int id)
+	public void goToLevel(String id)
 	{
-		loadLevel(_levels.get(id));
+		loadLevel(_levelman.level(id));
 	}
 	
 	/// main app.

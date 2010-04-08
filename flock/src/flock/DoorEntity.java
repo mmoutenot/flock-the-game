@@ -4,9 +4,9 @@ public class DoorEntity extends ActionEntity
 {
 	private int _lemmingsThrough;
 	private int _lemmingsRequired;
-	private int _nextLevel; //having this in the door class allows us to have multiple doors in the same room
+	private String _nextLevel; //having this in the door class allows us to have multiple doors in the same room
 	
-	public DoorEntity(double x, double y, int lemmings, int next) 
+	public DoorEntity(double x, double y, int lemmings, String next) 
 	{
 		super("door", x, y);
 		_lemmingsThrough = 0;
@@ -14,7 +14,7 @@ public class DoorEntity extends ActionEntity
 		_nextLevel = next;
 	}
 	
-	public DoorEntity(String id, double x, double y, int lemmings, int next)
+	public DoorEntity(String id, double x, double y, int lemmings, String next)
 	{
 		super(id, x, y);
 		_lemmingsThrough = 0;
