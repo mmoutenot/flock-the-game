@@ -232,7 +232,7 @@ public class Game extends JFrame implements Runnable
 		_tiles = level.tiles();
 		_entities = level.entities();
 		setTimeFreeze(true);
-		setPaused(false, null);
+		setPaused(true, level.getOverlay(getImageForOverlay()));
 		
 		// Find the player and all ToolEntities.
 		_player = null;
@@ -411,8 +411,7 @@ public class Game extends JFrame implements Runnable
 	/// Main loop for the game/logic thread.
 	public void gameLoop()
 	{
-		_keyman = new KeyManager();
-		addKeyListener(_keyman);
+		_keyman = new KeyManager(); // setPaused will add it
 		requestFocus(); // grab the keyboard
 		
 		FPSManager fps = new FPSManager(config().updateFps());
@@ -543,6 +542,10 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
+	/**
+	 * If @p paused is true, pauses the game, displaying overlay @p overlay.
+	 * If @p paused is false, unpauses the game.
+	 */
 	public void setPaused(boolean paused, Overlay overlay)
 	{	
 		if(_paused == paused)

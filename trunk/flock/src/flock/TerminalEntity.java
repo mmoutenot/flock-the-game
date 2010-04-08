@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 public class TerminalEntity extends ActionEntity
 {
 	/// An overlay with a password input.
-	public class TerminalOverlay extends Overlay
+	private class TerminalOverlay extends Overlay
 	{
 		private final int _maxlen = 20;  
 		private String _input;
