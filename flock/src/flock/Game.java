@@ -275,7 +275,7 @@ public class Game extends JFrame implements Runnable
 			if(ent.isPaused() || !type.isInstance(ent))
 				continue;
 			final double dist = _player.distance(ent);
-			System.out.println("Considering " + ent + " at dist " + dist);
+			//System.out.println("Considering " + ent + " at dist " + dist);
 			if(dist < min)
 			{
 				min = dist;
@@ -283,7 +283,7 @@ public class Game extends JFrame implements Runnable
 			}
 		}
 		
-		System.out.println("Nearest entity " + pick + " at dist " + min);
+		//System.out.println("Nearest entity " + pick + " at dist " + min);
 		if(min < _config.defaultPickToolDistance())
 			return pick;
 		else
