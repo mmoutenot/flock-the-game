@@ -253,6 +253,9 @@ abstract public class Entity extends Tile
 	/// override if you want to do something other than draw an image.
 	public void draw(Graphics2D g)
 	{
+		if(!_active)
+			return;
+		
 		g.drawImage(_image, _rect.x, _rect.y, null);
 		if(_debug)
 		{
