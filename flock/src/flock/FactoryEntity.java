@@ -37,9 +37,11 @@ public class FactoryEntity extends Entity
 		_wait -= msElapsed;
 		if(_wait <= 0)
 		{
-			Entity bastard = _anti ? new AntiLemmingEntity(_x + 10, _y + 10)
-			                       : new LemmingEntity(_x + 10, _y + 10);
-			Game.instance().getEntities().add(0, bastard);
+			final double x = _x + _rect.width, y = _y + _rect.height;
+			Entity bastard = _anti ? new AntiLemmingEntity(x, y)
+			                       : new LemmingEntity(x, y);
+			bastard.setFrozen(false);
+			Game.instance().addToAddList(bastard);
 			_wait = _delay;
 			_count--;
 		}
