@@ -103,7 +103,7 @@ public class CollisionManager
 	{
 		// TODO performance can be precalculating most of this...
 		ArrayList<Entity> colliders = new ArrayList<Entity>();
-		for(Entity e: Game.instance().entities())
+		for(Entity e: Game.instance().getEntities())
 			if(e.caresAboutCollisions())
 				colliders.add(e);
 		
@@ -124,11 +124,14 @@ public class CollisionManager
 	 */
 	public void checkEnvironment()
 	{
-		ArrayList<Entity> entities = Game.instance().entities();
+		ArrayList<Entity> entities = Game.instance().getEntities();
 		ArrayList<Tile> tiles;
 		
 		for (Entity e : entities)
 		{
+			if(!e.isActive())
+				continue;
+			
 			tiles = e.getTiles();
 			for (Tile t : tiles)
 			{				

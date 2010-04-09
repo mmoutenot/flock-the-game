@@ -46,16 +46,22 @@ public class LevelManager
 		return _defaultLevel;
 	}
 	
-	/// Returns level with id @p id.
+	/// Returns fresh copy of level with id @p id.
 	public Level level(String id)
 	{
-		return _levels.get(id);
+		try {
+			return _levels.get(id).getClass().newInstance();
+		} catch (Exception e) {
+			System.out.println("Failed to create instance of level " + id);
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
-	/// Returns pristine copy of this level.
+	/// Returns fresh copy of this level.
 	public Level level(Level level)
 	{
-		return _levels.get(level.id());
+		return level(level.id());
 	}
 	
 	/**

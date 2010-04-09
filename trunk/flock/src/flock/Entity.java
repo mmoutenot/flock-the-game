@@ -54,7 +54,11 @@ abstract public class Entity extends Tile
 	/// "real" constructor (to avoid duplication)
 	private void init(double x, double y)
 	{
-		_rect = new Rectangle((int)x, (int)y, _image.getWidth(null), _image.getHeight(null));
+		if(_image != null) // HACK: allow Entities with no image.
+			_rect = new Rectangle((int)x, (int)y, _image.getWidth(null), _image.getHeight(null));
+		else
+			_rect = new Rectangle();
+		
 		_x = x;
 		_y = y;
 		_velX = _velY = 0;
@@ -67,19 +71,6 @@ abstract public class Entity extends Tile
 		_debug = false;
 		_space = new Rectangle2D.Double();
 		update();
-	}
-	
-	/**
-	 * Required for deep-copying in Level.
-	 * Not sure if there is a better way to do this.
-	 * All subclasses must override this.
-	 */
-	@Override
-	public Object clone()
-	{
-		Entity copy = (Entity) super.clone();
-		copy._rect = (Rectangle) _rect.clone();
-		return copy;
 	}
 	
 	/// @return rectangle occupied by this Entity on screen.
@@ -159,6 +150,11 @@ abstract public class Entity extends Tile
 	public boolean isActive()
 	{
 		return _active;
+	}
+	
+	public void setActive(boolean active)
+	{
+		_active = active;
 	}
 	
 	public boolean caresAboutCollisions()

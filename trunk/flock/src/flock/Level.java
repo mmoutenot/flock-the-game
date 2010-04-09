@@ -128,23 +128,14 @@ abstract public class Level
 		return _cols;
 	}
 	
-	/// returns a copy of the tile array
 	public Tile[][] tiles()
 	{
-		Tile copy[][] = new Tile[_rows][_cols];
-		for(int r = 0; r < _rows; r++)
-			for(int c = 0; c < _cols; c++)
-				copy[r][c] = (Tile) _tiles[r][c].clone();
-		return copy;
+		return _tiles;
 	}
 	
-	/// returns a copy of the initial entities array
 	public ArrayList<Entity> entities()
 	{
-		ArrayList<Entity> copy = new ArrayList<Entity>();
-		for(Entity ent: _entities)
-			copy.add((Entity) ent.clone());
-		return copy;
+		return _entities;
 	}
 	
 	/// Reads the tile info from disk.

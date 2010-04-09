@@ -6,7 +6,7 @@ import java.awt.Image;
 /**
  * A Tile is a fixed-size, non-moving object on the screen.
  */
-public class Tile implements Cloneable
+public class Tile
 {
 	private String _id;
 	protected Image _image;
@@ -34,25 +34,6 @@ public class Tile implements Cloneable
 		_solid = true;
 		//_height = _image.getHeight(null);
 		//_width = _image.getWidth(null);
-	}
-	
-	/**
-	 * Required for deep-copying in Level.
-	 * Not sure if there is a better way to do this.
-	 * All subclasses must override this.
-	 */
-	@Override
-	public Object clone()
-	{
-		try
-		{
-			return super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			// WTF, shouldn't happen.
-            throw new InternalError(e.toString());
-        }
 	}
 
 	public String id()

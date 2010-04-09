@@ -9,7 +9,7 @@ abstract public class ToolEntity extends Entity
 	public ToolEntity(String id, double x, double y)
 	{
 		super(id, x, y);
-		//_accelY = 0;
+		//_accelY = 0; // don't fall
 	}
 	
 	public void pickUp()
