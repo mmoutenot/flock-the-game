@@ -93,11 +93,13 @@ public class Config
 		
 		try
 		{
-			LevelDemo lDemo = new LevelDemo();
-			mgr.addLevel(lDemo);
 			Level lZero = new LevelZero();
 			mgr.addLevel(lZero);
 			mgr.setDefaultLevel(lZero);
+			
+			mgr.addLevel(new LevelDemo());
+			mgr.addLevel(new LevelBlock());
+			mgr.addLevel(new LevelTop());
 		}
 		catch (Exception e)
 		{
