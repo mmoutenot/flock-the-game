@@ -32,6 +32,8 @@ public class Tile implements Cloneable
 		_image = mgr.getImage(id);
 		_gravity = 0;
 		_solid = true;
+		//_height = _image.getHeight(null);
+		//_width = _image.getWidth(null);
 	}
 	
 	/**

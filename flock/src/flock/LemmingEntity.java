@@ -37,5 +37,7 @@ public class LemmingEntity extends Entity
 		_image = null;
 		_velX = _velY = _accelX = _accelY = 0;
 		_collide = false;
+		Game.instance().getLemmings().remove(this);
+		Game.instance().entities().remove(this);
 	}
 }

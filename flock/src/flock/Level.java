@@ -219,6 +219,7 @@ abstract public class Level
 				{
 				case ' ': _tiles[r][c] = new AirTile(); break;
 				case '#': _tiles[r][c] = new WallTile(); break;
+				case '^': _tiles[r][c] = new SpikeTile(); break;
 				// ...
 				}
 			}

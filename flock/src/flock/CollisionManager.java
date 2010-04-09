@@ -117,4 +117,33 @@ public class CollisionManager
 					colliders.get(b).collided(colliders.get(a));
 				}
 	}
+	
+	/**
+	 * Checks any effects on each entity by the tile(s) it's on.
+	 * (e.g. anti-gravity, spikes
+	 */
+	public void checkEnvironment()
+	{
+		ArrayList<Entity> entities = Game.instance().entities();
+		ArrayList<Tile> tiles;
+		
+		for (Entity e : entities)
+		{
+			tiles = e.getTiles();
+			for (Tile t : tiles)
+			{				
+				if (t instanceof SpikeTile)
+				{
+					if (e instanceof LemmingEntity)
+					{
+						((LemmingEntity) e).kill();
+					}
+					else if (e instanceof PlayerEntity)
+					{
+						//have to restart the level
+					}
+				}
+			}
+		}
+	}
 }
