@@ -10,6 +10,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.JFrame;
 
 /**
@@ -393,7 +396,8 @@ public class Game extends JFrame implements Runnable
 		}
 		
 		// The entities.
-		for(Entity ent: _entities)
+		List<Entity> ents = Collections.unmodifiableList(_entities);
+		for(Entity ent: ents)
 			ent.draw(g);
 	}
 	
@@ -499,7 +503,7 @@ public class Game extends JFrame implements Runnable
 		return _tiles;
 	}
 	
-	public ArrayList<Entity> entities()
+	public ArrayList<Entity> getEntities()
 	{
 		return _entities;
 	}

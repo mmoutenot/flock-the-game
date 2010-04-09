@@ -10,6 +10,7 @@ abstract public class ActionEntity extends Entity
 	public ActionEntity(String id, double x, double y)
 	{
 		super(id, x, y);
+		_accelY = 0; // don't fall
 	}
 	
 	abstract public void action();

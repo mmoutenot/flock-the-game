@@ -15,12 +15,6 @@ public class DemoEntity extends Entity
 		_velY = -100;
 		update();
 	}
-	
-	@Override
-	public Object clone()
-	{
-		return super.clone();
-	}
 
 	@Override
 	public void doUpdate(long msElapsed)

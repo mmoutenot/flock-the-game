@@ -31,7 +31,7 @@ public class Config
 		_defaultGravity = 70 * 9.81; // note: pixels/s^2 not m/s^2
 		_defaultLemmingVelocity = 100;
 		_defaultPlayerMotionSpeed = 150;
-		_defaultPlayerJumpSpeed = 360;
+		_defaultPlayerJumpSpeed = 370;
 		_defaultPickToolDistance = 50;
 		_debugEnabled = false;
 	}

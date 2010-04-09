@@ -19,6 +19,9 @@ public class LevelTest
 			
 			LevelDemo test = new LevelDemo();
 			
+			/*
+			 * DEEP COPY DISABLED!
+			 * 
 			// Check that deep copy works like we want it to.
 			{
 				Tile[][] tiles = test.tiles();
@@ -47,6 +50,7 @@ public class LevelTest
 				}
 				System.err.println("Deep-copy for entities OK.");
 			}
+			*/
 			
 			// TODO incomplete
 		}
