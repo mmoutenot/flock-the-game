@@ -139,7 +139,7 @@ public class CollisionManager
 				{
 					if (e instanceof LemmingEntity)
 					{
-						((LemmingEntity) e).kill();
+						Game.instance().addToKillList((LemmingEntity) e);
 					}
 					else if (e instanceof PlayerEntity)
 					{

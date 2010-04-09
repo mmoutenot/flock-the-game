@@ -165,6 +165,7 @@ public class Game extends JFrame implements Runnable
 	private ArrayList<LemmingEntity> _lemmingEntities;
 	private PlayerEntity _player;
 	private ArrayList<DoorEntity> _doors;
+	private ArrayList<Entity> _killList;
 	private boolean _timeFreeze;
 	private boolean _paused = false;
 	private Overlay _pauseOverlay = null;
@@ -229,6 +230,7 @@ public class Game extends JFrame implements Runnable
 		_player = null;
 		_lemmingEntities = new ArrayList<LemmingEntity>();
 		_doors = new ArrayList<DoorEntity>();
+		_killList = new ArrayList<Entity>();
 		
 		for(Entity ent: _entities)
 		{
@@ -424,6 +426,26 @@ public class Game extends JFrame implements Runnable
 			_colman.notifyCollisions();
 			_colman.checkEnvironment();
 			_keyman.update();
+			doKillList();
+		}
+	}
+	
+	// Applies to all entities that we want removed (including tools that have been used)
+	public void addToKillList(Entity e)
+	{
+		_killList.add(e);
+	}
+	
+	public void doKillList()
+	{
+		for (Entity ent : _killList)
+		{
+			_entities.remove(ent);
+			if (ent instanceof LemmingEntity)
+			{
+				_lemmingEntities.remove(ent);
+				((LemmingEntity)ent).kill();
+			}
 		}
 	}
 	
@@ -499,6 +521,11 @@ public class Game extends JFrame implements Runnable
 	public ArrayList<LemmingEntity> getLemmings()
 	{
 		return _lemmingEntities;
+	}
+	
+	public PlayerEntity player()
+	{
+		return _player;
 	}
 	
 	public ArrayList<DoorEntity> getDoors()

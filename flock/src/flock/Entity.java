@@ -294,4 +294,10 @@ abstract public class Entity extends Tile
 		}
 		return result;
 	}
+	
+	//This method is in the Entity class because we want to be able to apply the killing to tools as well as lemmings
+	public void kill()
+	{
+		_image = null;
+	}
 }
