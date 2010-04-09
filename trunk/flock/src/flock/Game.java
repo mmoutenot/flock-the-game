@@ -188,6 +188,7 @@ public class Game extends JFrame implements Runnable
 		{
 			_levelman.addLevel(new LevelZero());
 			_levelman.addLevel(new LevelDemo());
+			_levelman.addLevel(new LevelTop());
 		} 
 		catch (Exception e) 
 		{
@@ -429,6 +430,7 @@ public class Game extends JFrame implements Runnable
 				ent.update();
 			}
 			_colman.notifyCollisions();
+			_colman.checkEnvironment();
 			_keyman.update();
 		}
 	}

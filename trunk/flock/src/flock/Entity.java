@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 /**
  * An Entity is a moving object on the screen.
@@ -273,5 +274,22 @@ abstract public class Entity extends Tile
 	public boolean intersects(Entity other)
 	{
 		return _rect.intersects(other.getRect());
+	}
+	
+	public ArrayList<Tile> getTiles()
+	{
+		ArrayList<Tile> result = new ArrayList<Tile>();
+		Tile[][] tiles = Game.instance().getTiles();
+		int tileHeight = Game.instance().config().tileHeight();
+		int tileWidth = Game.instance().config().tileWidth();
+		
+		for (int i = 0; i <= width() / tileWidth; i++)
+		{
+			for (int j = 0; j <= height() / tileHeight; j++)
+			{
+				result.add(tiles[(int)(_y / tileHeight) + j][(int)(_x / tileWidth) +  i]);
+			}
+		}
+		return result;
 	}
 }
