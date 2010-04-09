@@ -22,5 +22,7 @@ abstract public class ToolEntity extends Entity
 		_active = true;
 	}
 	
+	
+	
 	abstract public void use();
 }

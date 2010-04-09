@@ -34,7 +34,7 @@ public class DoorEntity extends ActionEntity
 		if(other instanceof LemmingEntity &&
 		   !(other instanceof AntiLemmingEntity)) // HACK
 		{
-			((LemmingEntity)other).kill();
+			Game.instance().addToKillList((LemmingEntity)other);
 			_lemmingsThrough++;
 			System.out.println("Number of lemmings in door: " + _lemmingsThrough);
 		}

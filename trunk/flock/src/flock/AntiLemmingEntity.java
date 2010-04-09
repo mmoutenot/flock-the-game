@@ -13,8 +13,8 @@ public class AntiLemmingEntity extends LemmingEntity
 	{
 		if(other instanceof LemmingEntity)
 		{
-			kill();
-			((LemmingEntity)other).kill();
+			Game.instance().addToKillList(this);
+			Game.instance().addToKillList((LemmingEntity) other);
 		}
 	}
 }

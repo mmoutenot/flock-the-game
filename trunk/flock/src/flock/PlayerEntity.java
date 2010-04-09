@@ -7,11 +7,13 @@ package flock;
 public class PlayerEntity extends Entity
 {
 	private ToolEntity _tool = null;
+	private boolean _facingLeft;
 	
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
 		_collide = true;
+		_facingLeft = false;
 	}
 
 	public void doUpdate(long msElapsed)
@@ -21,6 +23,14 @@ public class PlayerEntity extends Entity
 		{
 			_tool.setX(_x);
 			_tool.setY(_y);
+		}
+		if (_velX > 0)
+		{
+			_facingLeft = false;
+		}
+		else if (_velX < 0)
+		{
+			_facingLeft = true;
 		}
 	}
 	
@@ -54,6 +64,8 @@ public class PlayerEntity extends Entity
 		if(_tool == null)
 			return;
 		_tool.use();
+		Game.instance().addToKillList(_tool);
+		_tool = null;
 		// TODO figure out what to do about number of uses. Probably make tools single-use.
 	}
 	
@@ -62,5 +74,10 @@ public class PlayerEntity extends Entity
 	{
 		if(_space.y + _space.height - _y < 3)
 			setVelY(-Game.instance().config().defaultPlayerJumpSpeed());
+	}
+	
+	public boolean facingLeft()
+	{
+		return _facingLeft;
 	}
 }
