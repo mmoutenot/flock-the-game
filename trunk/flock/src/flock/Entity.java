@@ -31,6 +31,8 @@ abstract public class Entity extends Tile
 	protected boolean _paused;
 	/// The Entity only updates if it's active. A dead Lemming is inactive, for instance.
 	protected boolean _active;
+	/// The Entity only updates its position if _moving is true.  Doors don't move, for instance.
+	protected boolean _moving;
 	/// Defines whether or not the entity cares about collisions. False by default.
 	protected boolean _collide;
 	private boolean _debug;
@@ -67,6 +69,7 @@ abstract public class Entity extends Tile
 		_frozen = true;
 		_paused = false;
 		_active = true;
+		_moving = true;
 		_collide = false;
 		_debug = false;
 		_space = new Rectangle2D.Double();
@@ -202,36 +205,39 @@ abstract public class Entity extends Tile
 		_rect.y = (int)_y;
 		if(!_frozen && !_paused)
 		{
-			_space = Game.instance().collisionManager().getSpace(this);
-			_space.width -= _rect.width + 1;
-			_space.height -= _rect.height + 1;
-			
-			// This is where we would go if there were no obstacles.
-			_velX += _accelX * sec;
-			_velY += _accelY * sec;
-			_x += _velX * sec;
-			_y += _velY * sec;
-			
-			// This is where we actually stop due to obstacles.
-			if(_x < _space.x)
+			if(_moving)
 			{
-				_x = _space.x;
-				_velX = 0;
-			}
-			else if(_x > _space.x + _space.width)
-			{
-				_x = _space.x + _space.width;
-				_velX = 0;
-			}
-			if(_y < _space.y)
-			{
-				_y = _space.y;
-				_velY = 0;
-			}
-			else if(_y > _space.y + _space.height)
-			{
-				_y = _space.y + _space.height;
-				_velY = 0;
+				_space = Game.instance().collisionManager().getSpace(this);
+				_space.width -= _rect.width + 1;
+				_space.height -= _rect.height + 1;
+				
+				// This is where we would go if there were no obstacles.
+				_velX += _accelX * sec;
+				_velY += _accelY * sec;
+				_x += _velX * sec;
+				_y += _velY * sec;
+				
+				// This is where we actually stop due to obstacles.
+				if(_x < _space.x)
+				{
+					_x = _space.x;
+					_velX = 0;
+				}
+				else if(_x > _space.x + _space.width)
+				{
+					_x = _space.x + _space.width;
+					_velX = 0;
+				}
+				if(_y < _space.y)
+				{
+					_y = _space.y;
+					_velY = 0;
+				}
+				else if(_y > _space.y + _space.height)
+				{
+					_y = _space.y + _space.height;
+					_velY = 0;
+				}
 			}
 			
 			doUpdate(ms);

@@ -1,0 +1,18 @@
+package flock;
+
+public class LevelBlock extends Level
+{
+	public LevelBlock() throws Exception
+	{
+		super("block");
+		
+		_entities.add(new WrenchEntity(660, 50));
+		_entities.add(new DoorEntity(700, 520, 10, "zero"));
+		_entities.add(new FactoryEntity(100, 0, false, 10, 1000));
+		_entities.add(new FactoryEntity(350, 400, true, 5, 1000));
+		
+		
+		_entities.add(new PlayerEntity(100, 100));
+	}
+
+}

@@ -187,18 +187,6 @@ public class Game extends JFrame implements Runnable
 		_levelman = new LevelManager();
 		_colman = new CollisionManager();
 		
-		try 
-		{
-			_levelman.addLevel(new LevelZero());
-			_levelman.addLevel(new LevelDemo());
-			_levelman.addLevel(new LevelTop());
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		
-		
 		if(!testing)
 		{
 			_canvas = new Canvas();
