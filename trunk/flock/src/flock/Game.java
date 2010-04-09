@@ -166,6 +166,7 @@ public class Game extends JFrame implements Runnable
 	private PlayerEntity _player;
 	private ArrayList<DoorEntity> _doors;
 	private ArrayList<Entity> _killList;
+	private ArrayList<Entity> _addList;
 	private boolean _timeFreeze;
 	private boolean _paused = false;
 	private Overlay _pauseOverlay = null;
@@ -231,6 +232,7 @@ public class Game extends JFrame implements Runnable
 		_lemmingEntities = new ArrayList<LemmingEntity>();
 		_doors = new ArrayList<DoorEntity>();
 		_killList = new ArrayList<Entity>();
+		_addList = new ArrayList<Entity>();
 		
 		for(Entity ent: _entities)
 		{
@@ -386,9 +388,11 @@ public class Game extends JFrame implements Runnable
 		}
 		
 		// The entities.
-		List<Entity> ents = Collections.unmodifiableList(_entities);
-		for(Entity ent: ents)
-			ent.draw(g);
+		synchronized(_entities)
+		{
+			for(Entity ent: _entities)
+				ent.draw(g);
+		}
 	}
 	
 	/// Takes a screenshot of the game.  Used by Overlays.
@@ -419,33 +423,52 @@ public class Game extends JFrame implements Runnable
 			// Update everything.
 			// Note: it is the Entity's job to skip the update if paused.
 			_debugPressed = false;
-			for(Entity ent: _entities)
+			List<Entity> ents = Collections.unmodifiableList(_entities);
+			for(Entity ent: ents)
 			{
 				ent.update();
 			}
 			_colman.notifyCollisions();
 			_colman.checkEnvironment();
 			_keyman.update();
-			doKillList();
+			addRemoveEntities();
 		}
 	}
 	
-	// Applies to all entities that we want removed (including tools that have been used)
+	/// Applies to all entities that we want removed (including tools that have been used)
 	public void addToKillList(Entity e)
 	{
 		_killList.add(e);
 	}
 	
-	public void doKillList()
+	/// Called when we want to add an entity to the currently running game.
+	public void addToAddList(Entity e)
 	{
-		for (Entity ent : _killList)
+		_addList.add(e);
+	}
+	
+	/// Removes kill-listed entities, adds add-listed entities.
+	public void addRemoveEntities()
+	{
+		synchronized(_entities)
 		{
-			_entities.remove(ent);
-			if (ent instanceof LemmingEntity)
+			for (Entity ent : _killList)
 			{
-				_lemmingEntities.remove(ent);
-				((LemmingEntity)ent).kill();
+				_entities.remove(ent);
+				if (ent instanceof LemmingEntity)
+				{
+					_lemmingEntities.remove(ent);
+					((LemmingEntity)ent).kill();
+				}
 			}
+			_killList.clear();
+			
+			for(Entity e: _addList)
+			{
+				_entities.add(0, e);
+				System.out.println("Added " + e);
+			}
+			_addList.clear();
 		}
 	}
 	

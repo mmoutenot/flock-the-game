@@ -28,7 +28,7 @@ public class LemmingEntity extends Entity
 	public void doUpdate(long msElapsed)
 	{
 		if(_x - _space.x < 2 || _space.x + _space.width - _x < 2)
-			setVelX(-_velX);
+			_velX *= -1;
 	}
 	
 	public void kill()
