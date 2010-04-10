@@ -61,7 +61,11 @@ public class LevelManager
 	/// Returns fresh copy of this level.
 	public Level level(Level level)
 	{
-		return level(level.id());
+		if (level != null)
+		{
+			return level(level.id());
+		}
+		return null;
 	}
 	
 	/**
