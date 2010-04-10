@@ -101,10 +101,10 @@ public class CollisionManager
 	 */
 	public void notifyCollisions()
 	{
-		// TODO performance can be precalculating most of this...
+		// TODO performance can be improved by precalculating most of this...
 		ArrayList<Entity> colliders = new ArrayList<Entity>();
 		for(Entity e: Game.instance().getEntities())
-			if(e.caresAboutCollisions())
+			if(e.caresAboutCollisions() && !e.isFrozen())
 				colliders.add(e);
 		
 		// Careful here not to send duplicate collided() messages.
@@ -143,7 +143,7 @@ public class CollisionManager
 					}
 					else if (e instanceof PlayerEntity)
 					{
-						//have to restart the level
+						Game.instance().goToLevel(Game.instance().currentLevel().id());
 					}
 				}
 			}

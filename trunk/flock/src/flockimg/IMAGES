@@ -2,5 +2,9 @@ The following images were taken from the KDE Oxygen icon theme.
 TODO license.
 
 imageNotFound.png: /usr/share/icons/oxygen/64x64/status/dialog-error.png
+lemming.png: based on alien Zapped
+antilemming.png: based on alien Zapped
 wrench.png: /usr/share/icons/oxygen/64x64/actions/configure.png
 terminal.png: /usr/share/icons/oxygen/64x64/apps/terminal.png
+block.png: based on dialog-error.png above
+factory.png: based on folder-new.svgz from KDE svn

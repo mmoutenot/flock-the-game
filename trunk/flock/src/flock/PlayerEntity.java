@@ -12,7 +12,7 @@ public class PlayerEntity extends Entity
 	public PlayerEntity(double x, double y)
 	{
 		super("player", x, y);
-		_collide = true;
+		_collide = false;
 		_facingLeft = false;
 	}
 
@@ -66,7 +66,6 @@ public class PlayerEntity extends Entity
 		_tool.use();
 		Game.instance().addToKillList(_tool);
 		_tool = null;
-		// TODO figure out what to do about number of uses. Probably make tools single-use.
 	}
 	
 	/// Jumps if it's on top of solid ground.

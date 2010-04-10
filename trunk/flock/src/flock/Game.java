@@ -466,7 +466,7 @@ public class Game extends JFrame implements Runnable
 			for(Entity e: _addList)
 			{
 				_entities.add(0, e);
-				System.out.println("Added " + e);
+//				System.out.println("Added " + e);
 			}
 			_addList.clear();
 		}

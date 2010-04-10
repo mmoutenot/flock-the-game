@@ -6,6 +6,8 @@ package flock;
  */
 abstract public class ToolEntity extends Entity
 {
+	private boolean _oldCollide;
+	
 	public ToolEntity(String id, double x, double y)
 	{
 		super(id, x, y);
@@ -15,14 +17,15 @@ abstract public class ToolEntity extends Entity
 	public void pickUp()
 	{
 		_active = false; // to prevent collision updates
+		_oldCollide = _collide;
+		_collide = false;
 	}
 	
 	public void drop()
 	{
 		_active = true;
+		_collide = _oldCollide;
 	}
-	
-	
 	
 	abstract public void use();
 }
