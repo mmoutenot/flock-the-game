@@ -145,6 +145,11 @@ abstract public class Entity extends Tile
 		return _velY;
 	}
 	
+	public boolean isFrozen()
+	{
+		return _frozen;
+	}
+	
 	public boolean isPaused()
 	{
 		return _paused;

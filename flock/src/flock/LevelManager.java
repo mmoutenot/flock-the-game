@@ -65,11 +65,11 @@ public class LevelManager
 	}
 	
 	/**
-	 * @return the Level corresponding to this password,
+	 * @return a fresh copy of the Level corresponding to this password,
 	 *         or null if no match.
 	 */
 	public Level levelForPassword(String password)
 	{
-		return _passwords.get(password);
+		return level(_passwords.get(password));
 	}
 }

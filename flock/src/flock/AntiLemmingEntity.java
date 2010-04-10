@@ -11,6 +11,8 @@ public class AntiLemmingEntity extends LemmingEntity
 	@Override
 	protected void collided(Entity other)
 	{
+		super.collided(other);
+		
 		if(other instanceof LemmingEntity && !(other instanceof AntiLemmingEntity))
 		{
 			Game.instance().addToKillList(this);
