@@ -1,0 +1,12 @@
+Flock
+========
+
+Design Highlights:
+* Game is a singleton class, accessible through Game.instance().  This way
+  everything that needs access to the currently running game can get it,
+  without needing to store references to the Game all over the place.
+* Two threads: one updates, the other one draws.
+  For potential race conditions (e.g. one thread accesses the list of entities
+  while the other changes it), we use Java's synchronized{}.
+
+
