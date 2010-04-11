@@ -30,6 +30,16 @@ public class LemmingEntity extends Entity
 	@Override
 	public void doUpdate(long msElapsed)
 	{
+		if(_velX * _velX < 1)
+		{
+			// HACK: Sometimes we update too slowly and velX gets set to zero
+			// in Entity.update().  Try to fix it.
+//			System.err.println("BUG: " + this + " has velX " + _velX);
+			if(Math.abs(_x - _space.x) < Math.abs(_space.x + _space.width - _x))
+				_velX = Game.instance().config().defaultLemmingVelocity();
+			else
+				_velX = -Game.instance().config().defaultLemmingVelocity();
+		}
 		if(_x - _space.x < 2 || _space.x + _space.width - _x < 2)
 			turnAround();
 	}
@@ -38,7 +48,7 @@ public class LemmingEntity extends Entity
 	@Override
 	protected void collided(Entity other)
 	{
-		System.out.println(this + " collided with " + other);
+		//System.out.println(this + " collided with " + other);
 		if(!(other instanceof LemmingEntity))
 			turnAround();
 	}

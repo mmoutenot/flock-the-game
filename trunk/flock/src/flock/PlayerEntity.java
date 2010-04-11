@@ -58,7 +58,10 @@ public class PlayerEntity extends Entity
 		doUpdate(0); // syncs positions
 	}
 	
-	/// Uses current tool.
+	/**
+	 * Uses current tool.
+	 * Tools are single-use, and will disappear once used.
+	 */ 
 	public void useTool()
 	{
 		if(_tool == null)
