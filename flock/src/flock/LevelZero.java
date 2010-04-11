@@ -21,6 +21,8 @@ public class LevelZero extends Level
 		public TutorialText(double x, double y, double w, double h, String[] l, Callable<Void> func)
 		{
 			super(x, y, w, h, l);
+			_frozen = false;
+			_active = true;
 			_collide = true;
 			_func = func;
 		}
@@ -214,6 +216,9 @@ public class LevelZero extends Level
 		_entities.add(_text2);
 		_entities.add(_text3);
 		_entities.add(new TerminalEntity(600, 500));
-		_entities.add(new PlayerEntity(550, 500)); // player last
+		
+		PlayerEntity player = new PlayerEntity(550, 500);
+		player.setCollides(true); // HACK: in this level, need to react to collisions
+		_entities.add(player); // player last
 	}
 }

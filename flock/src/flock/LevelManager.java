@@ -43,7 +43,7 @@ public class LevelManager
 	
 	public Level defaultLevel()
 	{
-		return _defaultLevel;
+		return level(_defaultLevel);
 	}
 	
 	/// Returns fresh copy of level with id @p id.

@@ -168,6 +168,16 @@ abstract public class Entity extends Tile
 		_active = active;
 	}
 	
+	public void setCollides(boolean collides)
+	{
+		_collide = collides;
+	}
+	
+	public boolean isMoving()
+	{
+		return _moving;
+	}
+	
 	public boolean caresAboutCollisions()
 	{
 		return _collide;
