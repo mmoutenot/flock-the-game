@@ -1,5 +1,8 @@
 package flock;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 /// A door through which LemmingEntities can go through.
 public class DoorEntity extends ActionEntity
 {
@@ -38,6 +41,20 @@ public class DoorEntity extends ActionEntity
 			_lemmingsThrough++;
 			System.out.println("Number of lemmings in door: " + _lemmingsThrough);
 		}
+	}
+	
+	/// Draw some numbers telling the player how many lemmings he has to get in.
+	@Override
+	public void draw(Graphics2D g)
+	{
+		super.draw(g);
+		
+		final String str = _lemmingsThrough + "/" + _lemmingsRequired;
+		if(_lemmingsThrough >= _lemmingsRequired)
+			g.setColor(new Color(0.0f, 0.8f, 0.0f));
+		else
+			g.setColor(Color.RED);
+		g.drawString(str, (int)_x, (int)_y - 2);
 	}
 	
 	@Override

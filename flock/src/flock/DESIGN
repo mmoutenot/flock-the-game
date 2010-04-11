@@ -8,5 +8,24 @@ Design Highlights:
 * Two threads: one updates, the other one draws.
   For potential race conditions (e.g. one thread accesses the list of entities
   while the other changes it), we use Java's synchronized{}.
+* Project management: Doxygen for docs, Google Code SVN for code.
+* Types of sprites:
+  - Tiles (non-moving things that make up the grid of the level.
+  - Entities (moving things, like the player and lemmings).
+* Collision detection:
+  - For tiles: bounding-box method.
+  - For entities: straightforward intersection checking.
+* Most customizable features of the game (FPS, physics constants, etc.) are
+  conveniently aggregated in Config.java.
 
+Known Bugs:
+* Collision detection is imperfect -- lemmings get stuck sometimes (very
+  rarely, probably a timing glitch where an update takes longer than it was
+  supposed to).
+* Performance can go down a bit when there are very many entities on screen.
 
+Ideas for the Future (also see game design doc):
+* Extend Config.java to handle config files.
+* Extend ImageManager.java to handle themes / skins.
+* Add more unit tests to the flocktest/ dir.
+* Also see TODOs in the code.

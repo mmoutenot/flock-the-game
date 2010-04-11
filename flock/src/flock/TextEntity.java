@@ -3,7 +3,6 @@ package flock;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 /// An entity displaying some text.
 public class TextEntity extends Entity

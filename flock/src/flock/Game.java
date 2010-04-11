@@ -362,6 +362,7 @@ public class Game extends JFrame implements Runnable
 	}
 	
 	/// Draws game onto graphics object @p g.
+	@SuppressWarnings("unchecked")
 	private void draw(Graphics2D g)
 	{
 		g.setBackground(new Color(230, 230, 230));
@@ -388,11 +389,13 @@ public class Game extends JFrame implements Runnable
 		}
 		
 		// The entities.
+		ArrayList<Entity> copy;
 		synchronized(_entities)
 		{
-			for(Entity ent: _entities)
-				ent.draw(g);
+			copy = (ArrayList<Entity>) _entities.clone();
 		}
+		for(Entity ent: copy)
+			ent.draw(g);
 	}
 	
 	/// Takes a screenshot of the game.  Used by Overlays.
@@ -450,6 +453,9 @@ public class Game extends JFrame implements Runnable
 	/// Removes kill-listed entities, adds add-listed entities.
 	public void addRemoveEntities()
 	{
+		if(_killList.isEmpty() && _addList.isEmpty())
+			return;
+		
 		synchronized(_entities)
 		{
 			for (Entity ent : _killList)
