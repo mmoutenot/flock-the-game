@@ -8,4 +8,4 @@ Known Bugs:
 * Performance can go down a bit when there are very many entities on screen.
 * The "debug mode" (enabled in config) was useful when debugging collisions --
   but hasn't been changed / fixed after all the changes that followed it.
-
+* Clicks cause the game to freeze.  I have no idea why.
