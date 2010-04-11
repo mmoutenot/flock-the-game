@@ -22,7 +22,7 @@ public class LevelCatch extends Level
 	{
 		super("catch");
 		
-		_entities.add(new DoorEntity(700, 520, 15, "zero"));
+		_entities.add(new DoorEntity(700, 520, 15, "patience"));
 		_entities.add(new FactoryEntity(350, 0, true, 100, 1500));
 		
 		// "Explanatory" text:

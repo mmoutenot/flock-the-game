@@ -71,7 +71,7 @@ public class LevelZero extends Level
 		@Override
 		public void use()
 		{
-			Game.instance().getEntities().add(0, new DoorEntity(_x, _y, 1, "test"));
+			Game.instance().getEntities().add(0, new DoorEntity(_x, _y, 1, "top"));
 			
 			String[] msg2 =
 			{
