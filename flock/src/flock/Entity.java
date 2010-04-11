@@ -27,7 +27,10 @@ abstract public class Entity extends Tile
 	protected double _velY;
 	protected double _accelX;
 	protected double _accelY;
+	
+	/// Whether or not this Entity is time-frozen.
 	protected boolean _frozen;
+	/// Whether or not this Entity is paused.
 	protected boolean _paused;
 	/// The Entity only updates if it's active. A dead Lemming is inactive, for instance.
 	protected boolean _active;
@@ -35,11 +38,11 @@ abstract public class Entity extends Tile
 	protected boolean _moving;
 	/// Defines whether or not the entity cares about collisions. False by default.
 	protected boolean _collide;
+	/// Whether the Entity should draw debugging graphics (for testing).
 	private boolean _debug;
 	
 	/// defines the space around the entity where it can move (i.e. bounded by walls)
 	protected Rectangle2D.Double _space;
-	
 	
 	public Entity(String id)
 	{
@@ -283,6 +286,7 @@ abstract public class Entity extends Tile
 		return _rect.intersects(other.getRect());
 	}
 	
+	/// Returns list of tiles intersecting with this Entity.
 	public ArrayList<Tile> getTiles()
 	{
 		ArrayList<Tile> result = new ArrayList<Tile>();
@@ -300,7 +304,7 @@ abstract public class Entity extends Tile
 		return result;
 	}
 	
-	//This method is in the Entity class because we want to be able to apply the killing to tools as well as lemmings
+	/// This method is in the Entity class because we want to be able to apply the killing to tools as well as lemmings
 	public void kill()
 	{
 		_image = null;

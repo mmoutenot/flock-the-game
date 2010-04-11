@@ -1,0 +1,11 @@
+Flock
+========
+
+Known Bugs:
+* Collision detection is imperfect -- lemmings get stuck sometimes (very
+  rarely, probably a timing glitch where an update takes longer than it was
+  supposed to).
+* Performance can go down a bit when there are very many entities on screen.
+* The "debug mode" (enabled in config) was useful when debugging collisions --
+  but hasn't been changed / fixed after all the changes that followed it.
+

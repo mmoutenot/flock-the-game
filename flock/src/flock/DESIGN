@@ -15,14 +15,12 @@ Design Highlights:
 * Collision detection:
   - For tiles: bounding-box method.
   - For entities: straightforward intersection checking.
-* Most customizable features of the game (FPS, physics constants, etc.) are
-  conveniently aggregated in Config.java.
-
-Known Bugs:
-* Collision detection is imperfect -- lemmings get stuck sometimes (very
-  rarely, probably a timing glitch where an update takes longer than it was
-  supposed to).
-* Performance can go down a bit when there are very many entities on screen.
+* Levels:
+  - The tile configuration is read from a text file.
+  - The entities are created and configured in the corresponding Level
+    subclass (see LevelZero.java for a level with highly customized Entities.)
+* Most customizable features of the game (FPS, keys, physics constants, etc.)
+  are conveniently aggregated in Config.java.
 
 Ideas for the Future (also see game design doc):
 * Extend Config.java to handle config files.
