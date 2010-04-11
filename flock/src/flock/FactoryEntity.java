@@ -8,6 +8,7 @@ package flock;
 public class FactoryEntity extends Entity
 {
 	private boolean _anti;
+	private boolean _bothWays;
 	private boolean _switchDirection;
 	private int _count;
 	private long _delay;
@@ -27,7 +28,17 @@ public class FactoryEntity extends Entity
 		_delay = msDelay;
 		_wait = _delay;
 		_moving = false;
+		_bothWays = true;
 		_switchDirection = false;
+	}
+	
+	/**
+	 * If true, the FactoryEntity will spawn Lemmings both left and right.
+	 * If false, it will throw all entities to the right.
+	 */
+	public void setBothWays(boolean both)
+	{
+		_bothWays = both;
 	}
 	
 	@Override
@@ -43,9 +54,12 @@ public class FactoryEntity extends Entity
 			Entity bastard = _anti ? new AntiLemmingEntity(x, y)
 			                       : new LemmingEntity(x, y);
 			bastard.setFrozen(false);
-			if(_switchDirection)
-				bastard.setVelX(-bastard.getVelX());
-			_switchDirection = !_switchDirection;
+			if(_bothWays)
+			{
+				if(_switchDirection)
+					bastard.setVelX(-bastard.getVelX());
+				_switchDirection = !_switchDirection;
+			}
 			
 			Game.instance().addToAddList(bastard);
 			_wait = _delay;
