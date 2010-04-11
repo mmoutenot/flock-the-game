@@ -102,6 +102,7 @@ public class Config
 			mgr.addLevel(new LevelTop());
 			mgr.addLevel(new LevelSpikes());
 			mgr.addLevel(new LevelPatience());
+			mgr.addLevel(new LevelButtons());
 		}
 		catch (Exception e)
 		{
