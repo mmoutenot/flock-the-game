@@ -25,7 +25,7 @@ public class Config
 	public Config()
 	{
 		_paintFps = 30;
-		_updateFps = 60;
+		_updateFps = 30;
 		_tileWidth = 30;
 		_tileHeight = 30;
 		_defaultGravity = 70 * 9.81; // note: pixels/s^2 not m/s^2
@@ -101,6 +101,7 @@ public class Config
 			mgr.addLevel(new LevelBlock());
 			mgr.addLevel(new LevelTop());
 			mgr.addLevel(new LevelSpikes());
+			mgr.addLevel(new LevelPatience());
 		}
 		catch (Exception e)
 		{
