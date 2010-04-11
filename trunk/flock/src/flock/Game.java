@@ -17,8 +17,8 @@ import javax.swing.JFrame;
 
 /**
  * Main game class. Contains the game and drawing loops (two separate threads),
- * as well as global access points for the configuration of the game and the
- * ImageManager of the game.
+ * as well as global access points for shared objects in the game (such as the
+ * Config, the ImageManager, etc.)
  */
 public class Game extends JFrame implements Runnable
 {
@@ -55,8 +55,6 @@ public class Game extends JFrame implements Runnable
 		public void keyPressed(KeyEvent e)
 		{
 			startMovePlayer(getKey(e));
-			// NOTE: eventually we'll want to handle the pause menu here as well,
-			// depending on whether the game is paused.
 		}
 		
 		@Override
@@ -162,9 +160,7 @@ public class Game extends JFrame implements Runnable
 	private Level _currentLevel = null;
 	private Tile[][] _tiles;
 	private ArrayList<Entity> _entities;
-	private ArrayList<LemmingEntity> _lemmingEntities;
 	private PlayerEntity _player;
-	private ArrayList<DoorEntity> _doors;
 	private ArrayList<Entity> _killList;
 	private ArrayList<Entity> _addList;
 	private boolean _timeFreeze;
@@ -219,6 +215,7 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
+	/// Starts playing the @p level.
 	public void loadLevel(Level level)
 	{
 		_currentLevel = level;
@@ -229,8 +226,6 @@ public class Game extends JFrame implements Runnable
 		
 		// Find the player and all ToolEntities.
 		_player = null;
-		_lemmingEntities = new ArrayList<LemmingEntity>();
-		_doors = new ArrayList<DoorEntity>();
 		_killList = new ArrayList<Entity>();
 		_addList = new ArrayList<Entity>();
 		
@@ -238,10 +233,6 @@ public class Game extends JFrame implements Runnable
 		{
 			if(ent instanceof PlayerEntity)
 				_player = (PlayerEntity)ent;
-			else if (ent instanceof LemmingEntity)
-				_lemmingEntities.add((LemmingEntity)ent);
-			else if (ent instanceof DoorEntity)
-				_doors.add((DoorEntity)ent);
 		}
 		if(_player == null)
 		{
@@ -463,7 +454,6 @@ public class Game extends JFrame implements Runnable
 				_entities.remove(ent);
 				if (ent instanceof LemmingEntity)
 				{
-					_lemmingEntities.remove(ent);
 					((LemmingEntity)ent).kill();
 				}
 			}
@@ -537,31 +527,25 @@ public class Game extends JFrame implements Runnable
 		return _colman;
 	}
 	
+	/// Returns the tiles of the current level.
 	public Tile[][] getTiles()
 	{
 		return _tiles;
 	}
 	
+	/// Returns all current entities.
 	public ArrayList<Entity> getEntities()
 	{
 		return _entities;
 	}
 	
-	public ArrayList<LemmingEntity> getLemmings()
-	{
-		return _lemmingEntities;
-	}
-	
+	/// Returns the PlayerEntity of the game.
 	public PlayerEntity player()
 	{
 		return _player;
 	}
 	
-	public ArrayList<DoorEntity> getDoors()
-	{
-		return _doors;
-	}
-	
+	/// Sets time freeze on or off.
 	public void setTimeFreeze(boolean freeze)
 	{
 		_timeFreeze = freeze;
@@ -603,6 +587,7 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 	
+	/// Loads a fresh copy of the level indicated by @p id.
 	public void goToLevel(String id)
 	{
 		loadLevel(_levelman.level(id));

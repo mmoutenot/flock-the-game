@@ -13,10 +13,6 @@ import java.util.concurrent.Callable;
  */
 public class LevelZero extends Level
 {
-//	interface TutorialFunctor
-//	{
-//		abstract void call(LevelZero 
-	
 	/// Custom TextEntity that calls a functor on collisions with the player.
 	private class TutorialText extends TextEntity
 	{
