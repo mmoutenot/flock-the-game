@@ -212,6 +212,7 @@ abstract public class Level
 				case '#': _tiles[r][c] = new WallTile(); break;
 				case '^': _tiles[r][c] = new SpikeTile(); break;
 				// ...
+				default: throw new Exception("Level " + _id + ": unknown tile '" + line.charAt(c) + "'.");
 				}
 			}
 		}

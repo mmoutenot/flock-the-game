@@ -304,5 +304,6 @@ abstract public class Entity extends Tile
 	public void kill()
 	{
 		_image = null;
+		_active = false;
 	}
 }
