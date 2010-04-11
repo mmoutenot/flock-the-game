@@ -36,7 +36,7 @@ public class LevelButtons extends Level
 	{
 		super("buttons");
 		
-		_entities.add(new DoorEntity(700, 520, 2, "zero"));
+		_entities.add(new DoorEntity(700, 520, 2, "catch"));
 		_entities.add(new FactoryEntity(100, 100, false, 2, 1500));
 		_entities.add(new FactoryEntity(530, 100, true, 2, 1000));
 		_entities.add(new CustomButton(300, 500));
