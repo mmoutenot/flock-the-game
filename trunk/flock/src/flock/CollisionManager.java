@@ -104,7 +104,7 @@ public class CollisionManager
 		// TODO performance can be improved by precalculating most of this...
 		ArrayList<Entity> colliders = new ArrayList<Entity>();
 		for(Entity e: Game.instance().getEntities())
-			if(e.caresAboutCollisions() && !e.isFrozen())
+			if(e.caresAboutCollisions())// && !e.isFrozen())
 				colliders.add(e);
 		
 		// Careful here not to send duplicate collided() messages.
@@ -129,7 +129,7 @@ public class CollisionManager
 		
 		for (Entity e : entities)
 		{
-			if(!e.isActive())
+			if(!e.isActive() || !e.isMoving())
 				continue;
 			
 			tiles = e.getTiles();

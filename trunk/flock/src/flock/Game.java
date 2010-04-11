@@ -359,7 +359,7 @@ public class Game extends JFrame implements Runnable
 		g.setBackground(new Color(230, 230, 230));
 		g.clearRect(0, 0, getWidth(), getHeight());
 		
-		// The tiles.
+		// The tiles. (FIXME can cause race condition on _tiles...)
 		for(int r = 0; r < _currentLevel.rows(); r++)
 			for(int c = 0; c < _currentLevel.cols(); c++)
 				_tiles[r][c].draw(g, c * _config.tileWidth(), r * _config.tileHeight());

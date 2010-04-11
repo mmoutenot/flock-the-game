@@ -42,7 +42,7 @@ public class TextEntity extends Entity
 		_rect.width = (int)w;
 		_rect.height = (int)h;
 		_lines = l;
-		_active = false; // don't move
+		_moving = false; // don't move
 		_collide = false; // don't care about collisions
 		_visible = true;
 	}
