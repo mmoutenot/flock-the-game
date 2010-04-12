@@ -39,6 +39,7 @@ public class DoorEntity extends ActionEntity
 		{
 			Game.instance().addToKillList((LemmingEntity)other);
 			_lemmingsThrough++;
+			Game.instance().scoreUp();
 			System.out.println("Number of lemmings in door: " + _lemmingsThrough);
 		}
 	}

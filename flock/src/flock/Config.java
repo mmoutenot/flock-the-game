@@ -105,6 +105,7 @@ public class Config
 			mgr.addLevel(new LevelButtons());
 			mgr.addLevel(new LevelCatch());
 			mgr.addLevel(new LevelSac());
+			mgr.addLevel(new LevelFinish());
 		}
 		catch (Exception e)
 		{
