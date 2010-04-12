@@ -168,6 +168,7 @@ public class Game extends JFrame implements Runnable
 	private Overlay _pauseOverlay = null;
 	/// If in debug mode, wait for a key press before doing an update.
 	private boolean _debugPressed = false;
+	private int _score = 0;
 	
 	private Game()
 	{
@@ -537,6 +538,16 @@ public class Game extends JFrame implements Runnable
 	public ArrayList<Entity> getEntities()
 	{
 		return _entities;
+	}
+	
+	public int score()
+	{
+		return _score;
+	}
+	
+	public void scoreUp()
+	{
+		_score++;
 	}
 	
 	/// Returns the PlayerEntity of the game.
